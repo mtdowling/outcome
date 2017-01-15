@@ -15,7 +15,9 @@ before_install:
 
 install: make test_setup
 
-script: make test
+script:
+  - make test
+  - make docs
 
 after_success:
   - luacov-coveralls --exclude $TRAVIS_BUILD_DIR/lua_install
