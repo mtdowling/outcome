@@ -1,11 +1,13 @@
 # Outcome
 
+[![Build Status](https://travis-ci.org/mtdowling/outcome.png?branch=master)](https://travis-ci.org/mtdowling/outcome)
+[![Coverage Status](https://coveralls.io/repos/mtdowling/outcome/badge.svg?branch=master&service=github)](https://coveralls.io/github/mtdowling/outcome?branch=master)
+[documentation](http://mtdowling.com/jmespath.rs/jmespath/)
+
 Outcome: functional and composable option and result types for Lua.
 
 * [Option](#option)
 * [Result](#result)
-
-[API Documentation](http://mtdowling.com/jmespath.rs/jmespath/)
 
 ## Option
 

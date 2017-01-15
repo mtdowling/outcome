@@ -13,11 +13,7 @@ before_install:
   - hererocks lua_install -r^ --$LUA
   - export PATH=$PATH:$PWD/lua_install/bin # Add directory with all installed binaries to PATH
 
-install:
-  - luarocks install luacheck
-  - luarocks install busted
-  - luarocks install luacov
-  - luarocks install luacov-coveralls
+install: make test_setup
 
 script: make travis
 

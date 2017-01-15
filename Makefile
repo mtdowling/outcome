@@ -1,6 +1,12 @@
 build:
 	@luarocks make rockspecs/outcome-1.0-0.rockspec > /dev/null
 
+test_setup:
+	luarocks install luacheck
+	luarocks install busted
+	luarocks install luacov
+	luarocks install luacov-coveralls
+
 test: build
 	@busted --verbose --coverage
 
