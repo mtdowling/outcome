@@ -42,6 +42,7 @@ release:
 	make publish_docs
 	luarocks pack outcome
 	luarocks upload rockspecs/outcome-$(TAG)-0.rockspec --api-key=$(LUAROCKS)
-	rm outcome-$(TAG)-0.all.rock
+	rm outcome-$(TAG)-0.all.rock || true
+	rm outcome-$(TAG)-0.src.rock
 
 .PHONY: test build travis docs publish_docs release
