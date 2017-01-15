@@ -5,6 +5,4 @@ dir = 'doc'
 use_markdown_titles = true
 package = 'outcome'
 sort_modules=true
-pretty = 'lxsh'
 format = 'markdown'
-prettify_files = true

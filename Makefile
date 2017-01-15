@@ -45,4 +45,8 @@ release:
 	rm outcome-$(TAG)-0.all.rock || true
 	rm outcome-$(TAG)-0.src.rock
 
+bench: build
+	lua bench/bench.lua
+	luajit bench/bench.lua
+
 .PHONY: test build travis docs publish_docs release

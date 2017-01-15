@@ -1,7 +1,6 @@
 --- Outcome: Functional and composable option and result types for Lua.
 --
 --    local outcome = require "outcome"
---    local Option, Result = outcome.Option, outcome.Result
 --
 -- @module outcome
 local outcome = {
@@ -32,16 +31,15 @@ local outcome = {
   ]]
 }
 
-local assert, type = assert, type
+local assert, type, error, pcall, string = assert, type, error, pcall, string
 local setmetatable, getmetatable = setmetatable, getmetatable
 
-local optionClass = "outcome.Option"
-local resultClass = "outcome.Result"
+local OPTION_CLASS, RESULT_CLASS = "outcome.Option", "outcome.Result"
 
 local function assertOption(value)
-  local valueType = type(value)
-  local errorMessage = "Value must be an `Option<T>`. Found " .. valueType
-  assert(valueType == "table" and value.class == optionClass, errorMessage)
+  if type(value) ~= "table" or value.class ~= OPTION_CLASS then
+    error("Value must be an `Option<T>`. Found " .. value)
+  end
   return value
 end
 
@@ -55,7 +53,6 @@ end
 -- **Examples**
 --
 --    local outcome = require "outcome"
---    local Option = outcome.Option
 --
 --    -- Options are either empty or present.
 --    assert(outcome.none():isNone())
@@ -76,21 +73,17 @@ end
 -- @type Option
 local Option = {} -- luacheck: ignore
 
-local function notImplemented()
-  error("Not implemented")
-end
-
 --- Returns true if the option contains a value.
 -- @treturn bool
-function Option:isSome() notImplemented() end
+function Option:isSome() end
 
 --- Returns true if the option value is nil.
 -- @treturn bool
-function Option:isNone() notImplemented() end
+function Option:isNone() end
 
 --- Returns the value if present, or throws an error.
 -- @return T the wrapped option.
-function Option:unwrap() notImplemented() end
+function Option:unwrap() end
 
 --- Unwraps and returns the value if present, or raises a specific error.
 --
@@ -99,7 +92,7 @@ function Option:unwrap() notImplemented() end
 --
 -- @tparam string message Message to raise.
 -- @return T returns the wrapped value.
-function Option:expect(message) notImplemented() end
+function Option:expect(message) end
 
 --- Unwraps and returns the value if present, or returns default value.
 --
@@ -108,7 +101,7 @@ function Option:expect(message) notImplemented() end
 --
 -- @param defaultValue Default value T to return.
 -- @return T returns the wrapped value or the default.
-function Option:unwrapOr(defaultValue) notImplemented() end
+function Option:unwrapOr(defaultValue) end
 
 --- Unwraps and returns the value if present, or returns the result of invoking
 -- a function that when called returns a value.
@@ -118,7 +111,7 @@ function Option:unwrapOr(defaultValue) notImplemented() end
 --
 -- @tparam function valueProvider to invoke if the value is empty.
 -- @return T returns the wrapped value or the value returned from valueProvider.
-function Option:unwrapOrElse(valueProvider) notImplemented() end
+function Option:unwrapOrElse(valueProvider) end
 
 --- Invokes a method with the value if present.
 --
@@ -126,7 +119,7 @@ function Option:unwrapOrElse(valueProvider) notImplemented() end
 --    opt:ifPresent(function(value) print(value) end)
 --
 -- @tparam function consumer Consumer to invoke with a side effect.
-function Option:ifPresent(consumer) notImplemented() end
+function Option:ifPresent(consumer) end
 
 --- Invokes a method if the option value is empty.
 --
@@ -134,7 +127,7 @@ function Option:ifPresent(consumer) notImplemented() end
 --    opt:ifEmpty(function(value) print("It's empty!") end)
 --
 -- @tparam function consumer Method to invoke if the value is empty.
-function Option:ifEmpty(consumer) notImplemented() end
+function Option:ifEmpty(consumer) end
 
 --- Returns `other` if the option value is present, otherwise returns self.
 --
@@ -142,9 +135,9 @@ function Option:ifEmpty(consumer) notImplemented() end
 --    local optB = outcome.some("123")
 --    assert(optB = optA:andOther(optB))
 --
--- @tparam `Option<T>` other Alternative Option to return.
+-- @tparam Option other Alternative `Option<T>` to return.
 -- @treturn Option Returns `Option<T>`
-function Option:andOther(other) notImplemented() end
+function Option:andOther(other) end
 
 --- Returns self if a value is present, otherwise returns `other`.
 --
@@ -152,9 +145,9 @@ function Option:andOther(other) notImplemented() end
 --    local optB = outcome.some("123")
 --    assert(optB = optA:orOther(optB))
 --
--- @tparam `Option<T>` other Alternative Option to return.
+-- @tparam Option other Alternative `Option<T>` to return.
 -- @treturn Option Returns `Option<T>`
-function Option:orOther(other) notImplemented() end
+function Option:orOther(other) end
 
 --- Returns self if a value is present, otherwise returns the result of f.
 --
@@ -166,7 +159,7 @@ function Option:orOther(other) notImplemented() end
 --
 -- @tparam function f Function that returns an `Option<T>`.
 -- @treturn Option Returns `Option<T>`
-function Option:orElseOther(f) notImplemented() end
+function Option:orElseOther(f) end
 
 --- Maps an `Option<T>` to `Option<U>` by applying a function to the contained
 -- value.
@@ -179,7 +172,7 @@ function Option:orElseOther(f) notImplemented() end
 --
 -- @tparam function f Function that accepts T and returns U.
 -- @treturn Option Returns `Option<U>`
-function Option:map(f) notImplemented() end
+function Option:map(f) end
 
 --- Applies a function to the contained value (if any), or returns a default.
 --
@@ -198,7 +191,7 @@ function Option:map(f) notImplemented() end
 -- @param defaultValue Value U to return if the option is empty.
 -- @tparam function f Function that accepts T and returns U.
 -- @treturn Option Returns `Option<U>`
-function Option:mapOr(defaultValue, f) notImplemented() end
+function Option:mapOr(defaultValue, f) end
 
 --- Applies a function to the contained value (if any), or computes a default.
 --
@@ -219,7 +212,7 @@ function Option:mapOr(defaultValue, f) notImplemented() end
 -- @tparam function defaultProvider Default function to invoke that returns U.
 -- @tparam function mapFunction Function that accepts T and returns U.
 -- @treturn Option Returns `Option<U>`
-function Option:mapOrElse(defaultProvider, mapFunction) notImplemented() end
+function Option:mapOrElse(defaultProvider, mapFunction) end
 
 --- Returns an empty option if the option value is not preset. Otherwise calls
 -- f with the wrapped value and returns the result.
@@ -232,7 +225,7 @@ function Option:mapOrElse(defaultProvider, mapFunction) notImplemented() end
 --
 -- @tparam function f Function that accepts T and returns `Option<U>`.
 -- @treturn Option Returns `Option<U>`
-function Option:flatmap(f) notImplemented() end
+function Option:flatmap(f) end
 
 --- Transforms the `Option<T>` into a `Result<T, E>`, mapping a present value to
 -- an Ok Result, and an empty value to Result err.
@@ -243,7 +236,7 @@ function Option:flatmap(f) notImplemented() end
 --
 -- @tparam function err Error to use in the Result if the value is empty.
 -- @treturn Result Returns `Result<T, E>`
-function Option:okOr(err) notImplemented() end
+function Option:okOr(err) end
 
 --- Transforms the `Option<T>` into a `Result<T, E>`, mapping a present value
 -- to an Ok Result, and an empty value to Result err.
@@ -256,9 +249,13 @@ function Option:okOr(err) notImplemented() end
 --
 -- @tparam function errorProvider Function that returns E.
 -- @treturn Result Returns `Result<T, E>`
-function Option:okOrElse(errorProvider) notImplemented() end
+function Option:okOrElse(errorProvider) end
 
 
+--- Represents a None Option.
+--
+-- We use two different implementations of Option for both None and Some in
+-- order to remove branching from the various methods.
 local None = {}
 
 local NoneMetatable = {
@@ -289,10 +286,6 @@ end
 
 function None:unwrapOrElse(valueProvider)
   return valueProvider()
-end
-
-function None:take()
-  return outcome._NONE_OPTION
 end
 
 function None:ifSome(_)
@@ -340,19 +333,14 @@ function None:okOrElse(errorProvider)
 end
 
 
+--- Represents a Some Option.
 local Some = {}
 
 local SomeMetatable = {
   __index = Some,
-  __lt = function (lhs, rhs)
-    return lhs._value ~= nil and rhs._value ~= nil and lhs._value < rhs._value
-  end,
-  __le = function (lhs, rhs)
-    return lhs._value ~= nil and rhs._value ~= nil and lhs._value <= rhs._value
-  end,
-  __eq = function(a, b)
-    return a._value == b._value
-  end
+  __lt = function (lhs, rhs) return lhs._value < rhs._value end,
+  __le = function (lhs, rhs) return lhs._value <= rhs._value end,
+  __eq = function(a, b) return a._value == b._value end
 }
 
 function Some:isSome()
@@ -476,8 +464,9 @@ local ResultMetatable = {
 local OK, ERR = true, false
 
 local function assertResult(value)
-  assert(type(value) == "table" and getmetatable(value) == ResultMetatable,
-      "Value must be a `Result<T, E>`. Found " .. type(value))
+  if type(value) ~= "table" or value.class ~= RESULT_CLASS then
+    error("Value must be a `Result<T, E>`. Found " .. type(value))
+  end
   return value
 end
 
@@ -734,10 +723,11 @@ end
 -- @param value Value T to wrap.
 -- @treturn Option `Option<T>`
 function outcome.some(value)
-  return setmetatable({_value = value, class = optionClass}, SomeMetatable)
+  if value == nil then error("A Some Option value may not be nil") end
+  return setmetatable({_value = value, class = OPTION_CLASS}, SomeMetatable)
 end
 
-outcome._NONE_OPTION = setmetatable({class = optionClass}, NoneMetatable)
+outcome._NONE_OPTION = setmetatable({class = OPTION_CLASS}, NoneMetatable)
 
 --- Returns a None Option.
 --
@@ -762,7 +752,7 @@ function outcome.ok(value)
   return setmetatable({
     _value = value,
     _kind = OK,
-    class = resultClass,
+    class = RESULT_CLASS,
   }, ResultMetatable)
 end
 
@@ -783,7 +773,7 @@ function outcome.err(value)
   return setmetatable({
     _value = value,
     _kind = ERR,
-    class = resultClass,
+    class = RESULT_CLASS,
   }, ResultMetatable)
 end
 

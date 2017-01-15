@@ -29,23 +29,22 @@ abstractions over the result.
 
 ```lua
 local outcome = require "outcome"
-local Option = outcome.Option
 
 -- Options are either empty or present.
-assert(Option.empty():isEmpty())
-assert(Option.of("foo"):isPresent())
+assert(outcome.none():isEmpty())
+assert(outcome.some("foo"):isPresent())
 
 -- You can map over the value in an Option.
-local result = Option.of(1)
+local result = outcome.some(1)
     :map(function(value) return value + 1 end)
     :unwrap()
 assert(result == 2)
 
 -- Raises an error with the message provided in expect.
-Option.empty():expect("Expected a value"):
+outcome.none():expect("Expected a value"):
 
 -- You can provide a default value when unwrapping an Option.
-assert("foo" == Option.empty():unwrapOr("foo"))
+assert("foo" == outcome.none():unwrapOr("foo"))
 ```
 
 
@@ -65,20 +64,20 @@ local outcome = require "outcome"
 local Result = outcome.Result
 
 -- Results are either Ok or Err.
-assert(Result.ok("ok value"):isOk())
-assert(Result.err("error value"):isErr())
+assert(outcome.ok("ok value"):isOk())
+assert(outcome.err("error value"):isErr())
 
 -- You can map over the Ok value in a Result.
-local result = Result.ok(1)
+local result = outcome.ok(1)
     :map(function(value) return value + 1 end)
     :unwrap()
 assert(result == 2)
 
 -- Raises an error with the message provided in expect.
-Result.err("error value"):expect("Result was not Ok"):
+outcome.err("error value"):expect("Result was not Ok"):
 
 -- You can provide a default value when unwrapping a Result.
-assert("foo" == Result.err("error value"):unwrapOr("foo"))
+assert("foo" == outcome.err("error value"):unwrapOr("foo"))
 ```
 
 
@@ -111,4 +110,14 @@ After busted is installed, execute the following command to run the tests:
 
 ```
 make test
+```
+
+
+## Tests
+
+There's a really simply benchmark tool that can be run using the following
+command:
+
+```
+make bench
 ```
