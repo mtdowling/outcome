@@ -1,6 +1,7 @@
 --- Outcome: Functional and composable option and result types for Lua.
 -- @module outcome
 local outcome = {
+  _VERSION     = "1.0.0",
   _DESCRIPTION = 'Functional and composable option and result types for Lua.',
   _URL         = 'https://github.com/mtdowling/outcome',
   _LICENSE     = [[
