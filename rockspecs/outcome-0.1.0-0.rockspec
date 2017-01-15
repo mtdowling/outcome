@@ -1,9 +1,9 @@
 package = 'outcome'
-version = '1.0-0'
+version = '0.1.0-0'
 
 source = {
    url = 'git://github.com/mtdowling/outcome',
-   tag = '1.0.0',
+   tag = '0.1.0-0',
 }
 
 description = {
@@ -17,6 +17,8 @@ dependencies = {
 }
 
 build = {
-   type = 'builtin',
-   modules = {outcome = 'outcome.lua'}
+   type = "builtin",
+   modules = {
+      outcome = 'outcome.lua',
+   }
 }
