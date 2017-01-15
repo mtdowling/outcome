@@ -1,0 +1,798 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Outcome Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Outcome</h1>
+
+
+
+
+<h2>Source</h2>
+<ul class="nowrap">
+  <li><strong>outcome.lua</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../index.html">outcome</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>outcome.lua</h2>
+<pre>
+<span class="comment">--- Outcome: Functional and composable option and result types for Lua.
+</span><span class="comment">--
+</span><span class="comment">--    local outcome = require "outcome"
+</span><span class="comment">--    local Option, Result = outcome.Option, outcome.Result
+</span><span class="comment">--
+</span><span class="comment">-- @module outcome
+</span><span class="keyword">local</span> outcome = {
+  _VERSION = <span class="string">"0.1.0"</span>,
+  _DESCRIPTION = <span class="string">'Functional and composable option and result types for Lua.'</span>,
+  _URL = <span class="string">'https://github.com/mtdowling/outcome'</span>,
+  _LICENSE = <span class="string">[[
+    MIT LICENSE
+    Copyright (c) 2017 Michael Dowling
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+  ]]</span>
+}
+
+<span class="keyword">local</span> <span class="global">assert</span>, <span class="global">type</span> = <span class="global">assert</span>, <span class="global">type</span>
+<span class="keyword">local</span> <span class="global">setmetatable</span>, <span class="global">getmetatable</span> = <span class="global">setmetatable</span>, <span class="global">getmetatable</span>
+
+<span class="comment">--- Option type.
+</span><span class="comment">--
+</span><span class="comment">-- The Option class is used as a functional replacement for null. Using Option
+</span><span class="comment">-- provides a composable mechanism for working with values that may or may not
+</span><span class="comment">-- be present. This Option implementation is heavily inspired by the Option
+</span><span class="comment">-- type in Rust, and somewhat by the Optional type in Java.
+</span><span class="comment">--
+</span><span class="comment">-- **Examples**
+</span><span class="comment">--
+</span><span class="comment">--    local outcome = require "outcome"
+</span><span class="comment">--    local Option = outcome.Option
+</span><span class="comment">--
+</span><span class="comment">--    -- Options are either empty or present.
+</span><span class="comment">--    assert(Option.empty():isEmpty())
+</span><span class="comment">--    assert(Option.of("foo"):isPresent())
+</span><span class="comment">--
+</span><span class="comment">--    -- You can map over the value in an Option.
+</span><span class="comment">--    local result = Option.of(1)
+</span><span class="comment">--        :map(function(value) return value + 1 end)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--    assert(result == 2)
+</span><span class="comment">--
+</span><span class="comment">--    -- Raises an error with the message provided in expect.
+</span><span class="comment">--    Option.empty():expect("Expected a value"):
+</span><span class="comment">--
+</span><span class="comment">--    -- You can provide a default value when unwrapping an Option.
+</span><span class="comment">--    assert("foo" == Option.empty():unwrapOr("foo"))
+</span><span class="comment">--
+</span><span class="comment">-- @type Option
+</span><span class="keyword">local</span> Option = {}
+
+<span class="keyword">local</span> OptionMetatable = {
+  __index = Option,
+  __lt = <span class="keyword">function</span> (lhs, rhs)
+    <span class="keyword">return</span> lhs._value ~= <span class="keyword">nil</span> <span class="keyword">and</span> rhs._value ~= <span class="keyword">nil</span> <span class="keyword">and</span> lhs._value &lt; rhs._value
+  <span class="keyword">end</span>,
+  __le = <span class="keyword">function</span> (lhs, rhs)
+    <span class="keyword">return</span> lhs._value ~= <span class="keyword">nil</span> <span class="keyword">and</span> rhs._value ~= <span class="keyword">nil</span> <span class="keyword">and</span> lhs._value &lt;= rhs._value
+  <span class="keyword">end</span>,
+  __eq = <span class="keyword">function</span>(a, b)
+    <span class="keyword">return</span> a._value == b._value
+  <span class="keyword">end</span>
+}
+
+<span class="keyword">local</span> <span class="keyword">function</span> assertOption(value)
+  <span class="global">assert</span>(<span class="global">type</span>(value) == <span class="string">"table"</span> <span class="keyword">and</span> <span class="global">getmetatable</span>(value) == OptionMetatable,
+      <span class="string">"Value must be an `Option&lt;T&gt;`. Found "</span> .. <span class="global">type</span>(value))
+  <span class="keyword">return</span> value
+<span class="keyword">end</span>
+
+<span class="comment">--- Create a new Option, wrapping a value.
+</span><span class="comment">-- If the provided value is nil, then the Option is considered empty.
+</span><span class="comment">--
+</span><span class="comment">--    local opt = Option.of("abc")
+</span><span class="comment">--    assert(opt:isPresent())
+</span><span class="comment">--    assert("abc" == opt:unwrap())
+</span><span class="comment">--
+</span><span class="comment">-- @param value Value T to wrap.
+</span><span class="comment">-- @treturn Option <code>Option&amp;lt;T&amp;gt;</code>
+</span><span class="keyword">function</span> Option.of(value)
+  <span class="keyword">return</span> <span class="global">setmetatable</span>({_value = value}, OptionMetatable)
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns an empty Option.
+</span><span class="comment">--
+</span><span class="comment">--    local opt = Option.empty()
+</span><span class="comment">--    assert(opt:isEmpty())
+</span><span class="comment">--
+</span><span class="comment">-- @treturn Option Returns <code>Option&amp;lt;T&amp;gt;</code>
+</span><span class="comment">-- @treturn Option <code>Option&amp;lt;T&amp;gt;</code>
+</span><span class="keyword">function</span> Option.empty()
+  <span class="keyword">return</span> outcome._EMPTY_OPTION
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns true if the option contains a value.
+</span><span class="comment">-- @treturn bool
+</span><span class="keyword">function</span> Option:isPresent()
+  <span class="keyword">return</span> self._value ~= <span class="keyword">nil</span>
+<span class="keyword">end</span><a id="97"></a>
+
+<span class="comment">--- Returns true if the option value is nil.
+</span><span class="comment">-- @treturn bool
+</span><span class="keyword">function</span> Option:isEmpty()
+  <span class="keyword">return</span> self._value == <span class="keyword">nil</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns the value if present, or throws an error.
+</span><span class="comment">-- @return T the wrapped option.
+</span><span class="keyword">function</span> Option:unwrap()
+  <span class="keyword">return</span> self:expect()
+<span class="keyword">end</span>
+
+<span class="comment">--- Unwraps and returns the value if present, or raises a specific error.
+</span><span class="comment">--
+</span><span class="comment">--    local option = Option.of("foo")
+</span><span class="comment">--    local value = option:expect("Error message")
+</span><span class="comment">--
+</span><span class="comment">-- @tparam string message Message to raise.
+</span><span class="comment">-- @return T returns the wrapped value.
+</span><span class="keyword">function</span> Option:expect(message)
+  <span class="global">assert</span>(self._value ~= <span class="keyword">nil</span>, message <span class="keyword">or</span> <span class="string">"Call to unwrap on a nil value"</span>)
+  <span class="keyword">return</span> self._value
+<span class="keyword">end</span>
+
+<span class="comment">--- Unwraps and returns the value if present, or returns default value.
+</span><span class="comment">--
+</span><span class="comment">--    local opt = Option.empty()
+</span><span class="comment">--    assert("foo", opt:unwrapOr("foo"))
+</span><span class="comment">--
+</span><span class="comment">-- @param defaultValue Default value T to return.
+</span><span class="comment">-- @return T returns the wrapped value or the default.
+</span><span class="keyword">function</span> Option:unwrapOr(defaultValue)
+  <span class="keyword">if</span> self._value ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> self._value
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> defaultValue
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Unwraps and returns the value if present, or returns the result of invoking
+</span><span class="comment">-- a function that when called returns a value.
+</span><span class="comment">--
+</span><span class="comment">--    local opt = Option.empty()
+</span><span class="comment">--    assert("foo", opt:unwrapOrElse(function() return "foo" end))
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function valueProvider to invoke if the value is empty.
+</span><span class="comment">-- @return T returns the wrapped value or the value returned from valueProvider.
+</span><span class="keyword">function</span> Option:unwrapOrElse(valueProvider)
+  <span class="keyword">if</span> self._value ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> self._value
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> valueProvider()
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Takes the value out of the option, leaving a nil in its place.
+</span><span class="comment">--
+</span><span class="comment">--    local optA = Option.of("foo")
+</span><span class="comment">--    local optB = optA:take()
+</span><span class="comment">--    assert("foo", optB:unwrap())
+</span><span class="comment">--    assert(optA:isEmpty())
+</span><span class="comment">--
+</span><span class="comment">-- @treturn Option Returns <code>Option&amp;lt;T&amp;gt;</code>
+</span><span class="keyword">function</span> Option:take()
+  <span class="keyword">if</span> self._value == <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> Option.empty()
+  <span class="keyword">end</span>
+  <span class="keyword">local</span> result = Option.of(self._value)
+  self._value = <span class="keyword">nil</span>
+  <span class="keyword">return</span> result
+<span class="keyword">end</span>
+
+<span class="comment">--- Invokes a method with the value if present.
+</span><span class="comment">--
+</span><span class="comment">--    local opt = Option.of("abc")
+</span><span class="comment">--    opt:ifPresent(function(value) print(value) end)
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function consumer Consumer to invoke with a side effect.
+</span><span class="keyword">function</span> Option:ifPresent(consumer)
+  <span class="keyword">if</span> self._value ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+    consumer(self._value)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Invokes a method if the option value is empty.
+</span><span class="comment">--
+</span><span class="comment">--    local opt = Option.empty()
+</span><span class="comment">--    opt:ifEmpty(function(value) print("It's empty!") end)
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function consumer Method to invoke if the value is empty.
+</span><span class="keyword">function</span> Option:ifEmpty(consumer)
+  <span class="keyword">if</span> self._value == <span class="keyword">nil</span> <span class="keyword">then</span>
+    consumer()
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns <code>other</code> if the option value is present, otherwise returns self.
+</span><span class="comment">--
+</span><span class="comment">--    local optA = Option.of("abc")
+</span><span class="comment">--    local optB = Option.of("123")
+</span><span class="comment">--    assert(optB = optA:andOther(optB))
+</span><span class="comment">--
+</span><span class="comment">-- @tparam <code>Option&amp;lt;T&amp;gt;</code> other Alternative Option to return.
+</span><span class="comment">-- @treturn Option Returns <code>Option&amp;lt;T&amp;gt;</code>
+</span><span class="keyword">function</span> Option:andOther(other)
+  <span class="keyword">if</span> self._value ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> assertOption(other)
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> self
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns self if a value is present, otherwise returns <code>other</code>.
+</span><span class="comment">--
+</span><span class="comment">--    local optA = Option.empty()
+</span><span class="comment">--    local optB = Option.of("123")
+</span><span class="comment">--    assert(optB = optA:orOther(optB))
+</span><span class="comment">--
+</span><span class="comment">-- @tparam <code>Option&amp;lt;T&amp;gt;</code> other Alternative Option to return.
+</span><span class="comment">-- @treturn Option Returns <code>Option&amp;lt;T&amp;gt;</code>
+</span><span class="keyword">function</span> Option:orOther(other)
+  <span class="keyword">if</span> self._value ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> self
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> assertOption(other)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns self if a value is present, otherwise returns the result of f.
+</span><span class="comment">--
+</span><span class="comment">--    local optA = Option.empty()
+</span><span class="comment">--    local optB = optA:orElseOther(function()
+</span><span class="comment">--      return Option.of("123")
+</span><span class="comment">--    end)
+</span><span class="comment">--    assert(optB:unwrap() == "123")
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function f Function that returns an <code>Option&amp;lt;T&amp;gt;</code>.
+</span><span class="comment">-- @treturn Option Returns <code>Option&amp;lt;T&amp;gt;</code>
+</span><span class="keyword">function</span> Option:orElseOther(f)
+  <span class="keyword">if</span> self._value ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> self
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> assertOption(f())
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Maps an <code>Option&amp;lt;T&amp;gt;</code> to <code>Option&amp;lt;U&amp;gt;</code> by applying a function to the contained
+</span><span class="comment">-- value.
+</span><span class="comment">--
+</span><span class="comment">--    local value Option.of(1)
+</span><span class="comment">--        :map(function(value) return value + 1 end)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == 2)
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function f Function that accepts T and returns U.
+</span><span class="comment">-- @treturn Option Returns <code>Option&amp;lt;U&amp;gt;</code>
+</span><span class="keyword">function</span> Option:map(f)
+  <span class="keyword">if</span> self._value == <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> self
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> Option.of(f(self._value))
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Applies a function to the contained value (if any), or returns a default.
+</span><span class="comment">--
+</span><span class="comment">--    local value Option.of("foo")
+</span><span class="comment">--        :mapOr("baz", function(value) return value .. " test" end)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == "foo test")
+</span><span class="comment">--
+</span><span class="comment">--    value Option.empty()
+</span><span class="comment">--        :mapOr("baz", function(value) return value .. " test" end)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == "baz")
+</span><span class="comment">--
+</span><span class="comment">-- @param defaultValue Value U to return if the option is empty.
+</span><span class="comment">-- @tparam function f Function that accepts T and returns U.
+</span><span class="comment">-- @treturn Option Returns <code>Option&amp;lt;U&amp;gt;</code>
+</span><span class="keyword">function</span> Option:mapOr(defaultValue, f)
+  <span class="keyword">if</span> self._value == <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> Option.of(defaultValue)
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> Option.of(f(self._value))
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Applies a function to the contained value (if any), or computes a default.
+</span><span class="comment">--
+</span><span class="comment">--    local mapFunction = function(value) return value .. "test" end)
+</span><span class="comment">--
+</span><span class="comment">--    local value Option.of("foo")
+</span><span class="comment">--        :mapOr(function() return "baz" end), mapFunction)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == "foo test")
+</span><span class="comment">--
+</span><span class="comment">--    value Option.empty()
+</span><span class="comment">--        :mapOr(function() return "baz" end), mapFunction)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == "baz")
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function defaultProvider Default function to invoke that returns U.
+</span><span class="comment">-- @tparam function mapFunction Function that accepts T and returns U.
+</span><span class="comment">-- @treturn Option Returns <code>Option&amp;lt;U&amp;gt;</code>
+</span><span class="keyword">function</span> Option:mapOrElse(defaultProvider, mapFunction)
+  <span class="keyword">if</span> self._value == <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> Option.of(defaultProvider())
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> Option.of(mapFunction(self._value))
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns an empty option if the option value is not preset. Otherwise calls
+</span><span class="comment">-- f with the wrapped value and returns the result.
+</span><span class="comment">--
+</span><span class="comment">--    local value = Option.of(1)
+</span><span class="comment">--        :flatmap(function(value) return Option.of(value + 1) end)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == 2)
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function f Function that accepts T and returns <code>Option&amp;lt;U&amp;gt;</code>.
+</span><span class="comment">-- @treturn Option Returns <code>Option&amp;lt;U&amp;gt;</code>
+</span><span class="keyword">function</span> Option:flatmap(f)
+  <span class="keyword">if</span> self._value == <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> self
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> assertOption(f(self._value))
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Transforms the <code>Option&amp;lt;T&amp;gt;</code> into a <code>Result&amp;lt;T, E&amp;gt;</code>, mapping a present value to
+</span><span class="comment">-- an Ok Result, and an empty value to Result err.
+</span><span class="comment">--
+</span><span class="comment">--    local res = Option.of(1):okOr("error data if empty")
+</span><span class="comment">--    assert(res:isOk())
+</span><span class="comment">--    assert(res:unwrap() == 1)
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function err Error to use in the Result if the value is empty.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, E&amp;gt;</code>
+</span><span class="keyword">function</span> Option:okOr(err)
+  <span class="keyword">if</span> self._value ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> outcome.Result.ok(self._value)
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> outcome.Result.err(err)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Transforms the <code>Option&amp;lt;T&amp;gt;</code> into a <code>Result&amp;lt;T, E&amp;gt;</code>, mapping a present value
+</span><span class="comment">-- to an Ok Result, and an empty value to Result err.
+</span><span class="comment">--
+</span><span class="comment">--    local res = Option.of(1):okOrElse(function()
+</span><span class="comment">--      return "error data if empty"
+</span><span class="comment">--    end)
+</span><span class="comment">--    assert(res:isOk())
+</span><span class="comment">--    assert(res:unwrap() == 1)
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function errorProvider Function that returns E.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, E&amp;gt;</code>
+</span><span class="keyword">function</span> Option:okOrElse(errorProvider)
+  <span class="keyword">if</span> self._value ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> outcome.Result.ok(self._value)
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> outcome.Result.err(errorProvider())
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- <code>Result&amp;lt;T, E&amp;gt;</code> is a type used for returning and propagating errors.
+</span><span class="comment">--
+</span><span class="comment">-- There are two kinds of Result objects:
+</span><span class="comment">--
+</span><span class="comment">-- * Ok: the result contains a successful value.
+</span><span class="comment">-- * Err: The result contains an error value.
+</span><span class="comment">--
+</span><span class="comment">-- **Examples**
+</span><span class="comment">--
+</span><span class="comment">--    local outcome = require "outcome"
+</span><span class="comment">--    local Result = outcome.Result
+</span><span class="comment">--
+</span><span class="comment">--    -- Results are either Ok or Err.
+</span><span class="comment">--    assert(Result.ok("ok value"):isOk())
+</span><span class="comment">--    assert(Result.err("error value"):isErr())
+</span><span class="comment">--
+</span><span class="comment">--    -- You can map over the Ok value in a Result.
+</span><span class="comment">--    local result = Result.ok(1)
+</span><span class="comment">--        :map(function(value) return value + 1 end)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(result == 2)
+</span><span class="comment">--
+</span><span class="comment">--    -- Raises an error with the message provided in expect.
+</span><span class="comment">--    Result.err("error value"):expect("Result was not Ok"):
+</span><span class="comment">--
+</span><span class="comment">--    -- You can provide a default value when unwrapping a Result.
+</span><span class="comment">--    assert("foo" == Result.err("error value"):unwrapOr("foo"))
+</span><span class="comment">--
+</span><span class="comment">-- @type Result
+</span><span class="keyword">local</span> Result = {}
+
+<span class="keyword">local</span> ResultMetatable = {
+  __index = Result,
+  __lt = <span class="keyword">function</span> (lhs, rhs)
+    <span class="keyword">return</span> lhs._kind == rhs._kind
+        <span class="keyword">and</span> lhs._value ~= <span class="keyword">nil</span> <span class="keyword">and</span> rhs._value ~= <span class="keyword">nil</span>
+        <span class="keyword">and</span> lhs._value &lt; rhs._value
+  <span class="keyword">end</span>,
+  __le = <span class="keyword">function</span> (lhs, rhs)
+    <span class="keyword">return</span> lhs._kind == rhs._kind
+        <span class="keyword">and</span> lhs._value ~= <span class="keyword">nil</span> <span class="keyword">and</span> rhs._value ~= <span class="keyword">nil</span>
+        <span class="keyword">and</span> lhs._value &lt;= rhs._value
+  <span class="keyword">end</span>,
+  __eq = <span class="keyword">function</span>(lhs, rhs)
+    <span class="keyword">return</span> lhs._kind == rhs._kind <span class="keyword">and</span> lhs._value == rhs._value
+  <span class="keyword">end</span>
+}
+
+<span class="keyword">local</span> OK, ERR = <span class="keyword">true</span>, <span class="keyword">false</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> assertResult(value)
+  <span class="global">assert</span>(<span class="global">type</span>(value) == <span class="string">"table"</span> <span class="keyword">and</span> <span class="global">getmetatable</span>(value) == ResultMetatable,
+      <span class="string">"Value must be a `Result&lt;T, E&gt;`. Found "</span> .. <span class="global">type</span>(value))
+  <span class="keyword">return</span> value
+<span class="keyword">end</span>
+
+<span class="comment">--- Create a new Ok Result.
+</span><span class="comment">--
+</span><span class="comment">--    local res = Result.ok("foo")
+</span><span class="comment">--    assert(res:isOk())
+</span><span class="comment">--    assert(res:unwrap() == "foo")
+</span><span class="comment">--
+</span><span class="comment">-- @tparam T value Ok value to wrap.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, E&amp;gt;</code>
+</span><span class="keyword">function</span> Result.ok(value)
+  <span class="keyword">return</span> <span class="global">setmetatable</span>({_value = value, _kind = OK}, ResultMetatable)
+<span class="keyword">end</span>
+
+<span class="comment">--- Create a new Err Result.
+</span><span class="comment">--
+</span><span class="comment">--    local res = Result.err("error message")
+</span><span class="comment">--    assert(res:isErr())
+</span><span class="comment">--    assert(res:unwrapErr() == "message")
+</span><span class="comment">--
+</span><span class="comment">--    -- Err values can be of any type.
+</span><span class="comment">--    local resWithComplexErr = Result.err({foo = true})
+</span><span class="comment">--    assert(resWithComplexErr:isErr())
+</span><span class="comment">--    assert(resWithComplexErr:unwrapErr().foo == true)
+</span><span class="comment">--
+</span><span class="comment">-- @tparam T value Error value to wrap.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, E&amp;gt;</code>
+</span><span class="keyword">function</span> Result.err(value)
+  <span class="keyword">return</span> <span class="global">setmetatable</span>({_value = value, _kind = ERR}, ResultMetatable)
+<span class="keyword">end</span>
+
+<span class="comment">--- Invokes a function and returns a <code>Result&amp;lt;T, E&amp;gt;</code>.
+</span><span class="comment">-- If the function errors, an Err Result is returned.
+</span><span class="comment">--
+</span><span class="comment">--    local res = Result.pcall(error, "oh no!")
+</span><span class="comment">--    assert(res:isErr())
+</span><span class="comment">--    assert(res:unwrapErr() == "oh no!")
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function f Function to invoke that returns T or raises E.
+</span><span class="comment">-- @tparam ... Arguments to pass to the function.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, E&amp;gt;</code>
+</span><span class="keyword">function</span> Result.<span class="global">pcall</span>(f, ...)
+  <span class="keyword">local</span> value, err = <span class="global">pcall</span>(f, ...)
+  <span class="keyword">if</span> err <span class="keyword">then</span>
+    <span class="keyword">return</span> Result.ok(value)
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> Result.err(err)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns true if the result is Ok.
+</span><span class="comment">-- @treturn bool
+</span><span class="keyword">function</span> Result:isOk()
+  <span class="keyword">return</span> self._kind == OK
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns true if the result is an error.
+</span><span class="comment">-- @treturn bool
+</span><span class="keyword">function</span> Result:isErr()
+  <span class="keyword">return</span> self._kind == ERR
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> errorToString(value)
+  <span class="keyword">local</span> valueType = <span class="global">type</span>(value)
+  <span class="keyword">if</span> valueType == <span class="string">"string"</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> value
+  <span class="keyword">elseif</span> valueType == <span class="string">"table"</span> <span class="keyword">then</span>
+    <span class="keyword">local</span> mt = <span class="global">getmetatable</span>(value)
+    <span class="keyword">return</span> mt <span class="keyword">and</span> mt.__tostring <span class="keyword">and</span> <span class="global">string</span>(value) <span class="keyword">or</span> <span class="string">"table error"</span>
+  <span class="keyword">elseif</span> valueType == <span class="string">"nil"</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> <span class="string">"nil error"</span>
+  <span class="keyword">elseif</span> valueType == <span class="string">"boolean"</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> <span class="string">"boolean error ("</span> .. value .. <span class="string">")"</span>
+  <span class="keyword">elseif</span> valueType == <span class="string">"number"</span> <span class="keyword">then</span>
+    <span class="keyword">return</span> <span class="string">"number error ("</span> .. value .. <span class="string">")"</span>
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> <span class="string">"error of type "</span> .. valueType
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns the value if Ok, or raises an error using the error value.
+</span><span class="comment">-- @return T the wrapped result value.
+</span><span class="comment">-- @raise Errors with if the result is Err.
+</span><span class="keyword">function</span> Result:unwrap()
+  <span class="keyword">if</span> self._kind == ERR <span class="keyword">then</span>
+    <span class="global">error</span>(errorToString(self._value))
+  <span class="keyword">end</span>
+  <span class="keyword">return</span> self._value
+<span class="keyword">end</span>
+
+<span class="comment">--- Unwraps a result, yielding the content of an Err.
+</span><span class="comment">-- @return E the error value.
+</span><span class="comment">-- @raise Errors if the value is Ok.
+</span><span class="keyword">function</span> Result:unwrapErr()
+  <span class="global">assert</span>(self._kind == ERR, <span class="string">"Call to unwrapErr on an Ok Result"</span>)
+  <span class="keyword">return</span> self._value
+<span class="keyword">end</span>
+
+<span class="comment">--- Unwraps and returns the value if Ok, or errors with a message.
+</span><span class="comment">-- @tparam string message Message to include in the error.
+</span><span class="comment">-- @return T returns the wrapped value.
+</span><span class="keyword">function</span> Result:expect(message)
+  <span class="global">assert</span>(self._kind == OK, message)
+  <span class="keyword">return</span> self._value
+<span class="keyword">end</span>
+
+<span class="comment">--- Unwraps and returns the value if Ok, or returns default value.
+</span><span class="comment">-- @param defaultValue Default value T to return.
+</span><span class="comment">-- @return T returns the wrapped value or the default.
+</span><span class="keyword">function</span> Result:unwrapOr(defaultValue)
+  <span class="keyword">if</span> self._kind == OK <span class="keyword">then</span>
+    <span class="keyword">return</span> self._value
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> defaultValue
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Unwraps and returns the value if Ok, or returns the result of invoking
+</span><span class="comment">-- a method that when called returns a value.
+</span><span class="comment">-- @tparam function valueProvider Function to invoke if the value is an error.
+</span><span class="comment">-- @return T returns the Ok value or the value returned from valueProvider.
+</span><span class="keyword">function</span> Result:unwrapOrElse(valueProvider)
+  <span class="keyword">if</span> self._kind == OK <span class="keyword">then</span>
+    <span class="keyword">return</span> self._value
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> valueProvider()
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Invokes a method with the value if the Result is Ok.
+</span><span class="comment">-- @tparam function consumer Consumer to invoke with a side effect.
+</span><span class="keyword">function</span> Result:ifOk(consumer)
+  <span class="keyword">if</span> self._kind == OK <span class="keyword">then</span>
+    consumer(self._value)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Invokes a method if the Result is an Err and passes the error to consumer.
+</span><span class="comment">-- @tparam function consumer Method to invoke if the value is error.
+</span><span class="keyword">function</span> Result:ifErr(consumer)
+  <span class="keyword">if</span> self._kind == ERR <span class="keyword">then</span>
+    consumer(self._value)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Converts from <code>Result&amp;lt;T, E&amp;gt;</code> to <code>Option&amp;lt;T&amp;gt;</code>.
+</span><span class="comment">-- Converts self into an <code>Option&amp;lt;T&amp;gt;</code>, consuming self, and discarding the error,
+</span><span class="comment">-- if any.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, E&amp;gt;</code>
+</span><span class="keyword">function</span> Result:okOption()
+  <span class="keyword">if</span> self._kind == OK <span class="keyword">then</span>
+    <span class="keyword">return</span> Option.of(self._value)
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> Option.empty()
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Converts from <code>Result&amp;lt;T, E&amp;gt;</code> to <code>Option&amp;lt;E&amp;gt;</code>.
+</span><span class="comment">-- Converts self into an <code>Option&amp;lt;E&amp;gt;</code>, consuming self, and discarding the
+</span><span class="comment">-- success value, if any.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, E&amp;gt;</code>
+</span><span class="keyword">function</span> Result:errOption()
+  <span class="keyword">if</span> self._kind == ERR <span class="keyword">then</span>
+    <span class="keyword">return</span> Option.of(self._value)
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> Option.empty()
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns other if the result is Ok, otherwise returns the Err value of self.
+</span><span class="comment">-- @tparam Result other <code>Result&amp;lt;T, E&amp;gt;</code> other Alternative Result to return.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, E&amp;gt;</code>
+</span><span class="keyword">function</span> Result:andOther(other)
+  <span class="keyword">if</span> self._kind == OK <span class="keyword">then</span>
+    <span class="keyword">return</span> assertResult(other)
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> self
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Returns other if the result is Err, otherwise returns self.
+</span><span class="comment">--
+</span><span class="comment">--    local value = Result.err("error!")
+</span><span class="comment">--        :orOther(Result.ok(1))
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == 1)
+</span><span class="comment">--
+</span><span class="comment">--    value = Result.ok(1)
+</span><span class="comment">--        :orOther(Result.ok(999))
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == 1)
+</span><span class="comment">-- @tparam Result other <code>Result&amp;lt;T, E&amp;gt;</code> other Alternative Result to return.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, E&amp;gt;</code>
+</span><span class="keyword">function</span> Result:orOther(other)
+  <span class="keyword">if</span> self._kind == OK <span class="keyword">then</span>
+    <span class="keyword">return</span> self
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> assertResult(other)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Calls resultProvider if the result is Err, otherwise returns self.
+</span><span class="comment">--
+</span><span class="comment">-- This function can be used for control flow based on result values.
+</span><span class="comment">--
+</span><span class="comment">--    local value = Result.err("error!")
+</span><span class="comment">--        :orElseOther(function(v) return Result.ok(1) end)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == 1)
+</span><span class="comment">--
+</span><span class="comment">--    value = Result.ok(1)
+</span><span class="comment">--        :orElseOther(function(v) return Result.ok(999) end)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == 1)
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function resultProvider Function that returns <code>Result&amp;lt;T, E&amp;gt;</code>.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, E&amp;gt;</code>
+</span><span class="keyword">function</span> Result:orElseOther(resultProvider)
+  <span class="keyword">if</span> self._kind == OK <span class="keyword">then</span>
+    <span class="keyword">return</span> self
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> assertResult(resultProvider())
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Maps a <code>Result&amp;lt;T, E&amp;gt;</code> to <code>Result&amp;lt;U, E&amp;gt;</code> by applying a function to a
+</span><span class="comment">-- contained Ok value, leaving an Err value untouched.
+</span><span class="comment">--
+</span><span class="comment">-- This function can be used to compose the results of two functions.
+</span><span class="comment">--
+</span><span class="comment">--    local value = Result.ok(1)
+</span><span class="comment">--        :map(function(v) return v + 1 end)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == 2)
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function f Function that accepts <code>T</code> and returns <code>U</code>.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;U, E&amp;gt;</code>
+</span><span class="keyword">function</span> Result:map(f)
+  <span class="keyword">if</span> self._kind == OK <span class="keyword">then</span>
+    <span class="keyword">return</span> Result.ok(f(self._value))
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> self
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Maps a <code>Result&amp;lt;T, E&amp;gt;</code> to <code>Result&amp;lt;T, F&amp;gt;</code> by applying a function to a
+</span><span class="comment">-- contained Err value, leaving an Ok value untouched.
+</span><span class="comment">--
+</span><span class="comment">-- This function can be used to pass through a successful result while handling
+</span><span class="comment">-- an error.
+</span><span class="comment">--
+</span><span class="comment">--    local value = Result.err(1)
+</span><span class="comment">--        :mapErr(function(v) return v + 1 end)
+</span><span class="comment">--        :unwrapErr()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == 2)
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function f Function that accepts <code>E</code> and returns <code>U</code>.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, F&amp;gt;</code>
+</span><span class="keyword">function</span> Result:mapErr(f)
+  <span class="keyword">if</span> self._kind == ERR <span class="keyword">then</span>
+    <span class="keyword">return</span> Result.err(f(self._value))
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> self
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">--- Calls f if the result is Ok, otherwise returns the Err value of self.
+</span><span class="comment">--
+</span><span class="comment">-- This function can be used for control flow based on Result values.
+</span><span class="comment">--
+</span><span class="comment">--    local value = Result.ok(1)
+</span><span class="comment">--        :flatmap(function(v) return Result.ok(v + 1) end)
+</span><span class="comment">--        :unwrap()
+</span><span class="comment">--
+</span><span class="comment">--    assert(value == 2)
+</span><span class="comment">--
+</span><span class="comment">-- @tparam function f Function that accepts T and returns <code>Result&amp;lt;T. E&amp;gt;</code>.
+</span><span class="comment">-- @treturn Result Returns <code>Result&amp;lt;T, E&amp;gt;</code>
+</span><span class="keyword">function</span> Result:flatmap(f)
+  <span class="keyword">if</span> self._kind == OK <span class="keyword">then</span>
+    <span class="keyword">return</span> assertResult(f(self._value))
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> self
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+outcome.Result = Result
+outcome.Option = Option
+outcome._EMPTY_OPTION = Option.of(<span class="keyword">nil</span>)
+
+<span class="keyword">return</span> outcome</pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-01-14 21:38:18 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
