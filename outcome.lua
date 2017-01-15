@@ -722,6 +722,7 @@ end
 --
 -- @param value Value T to wrap.
 -- @treturn Option `Option<T>`
+-- @within Option functions
 function outcome.some(value)
   if value == nil then error("A Some Option value may not be nil") end
   return setmetatable({_value = value, class = OPTION_CLASS}, SomeMetatable)
@@ -736,6 +737,7 @@ outcome._NONE_OPTION = setmetatable({class = OPTION_CLASS}, NoneMetatable)
 --
 -- @treturn Option Returns `Option<T>`
 -- @treturn Option `Option<T>`
+-- @within Option functions
 function outcome.none()
   return outcome._NONE_OPTION
 end
@@ -748,6 +750,7 @@ end
 --
 -- @tparam T value Ok value to wrap.
 -- @treturn Result Returns `Result<T, E>`
+-- @within Result functions
 function outcome.ok(value)
   return setmetatable({
     _value = value,
@@ -769,6 +772,7 @@ end
 --
 -- @tparam T value Error value to wrap.
 -- @treturn Result Returns `Result<T, E>`
+-- @within Result functions
 function outcome.err(value)
   return setmetatable({
     _value = value,
@@ -787,6 +791,7 @@ end
 -- @tparam function f Function to invoke that returns T or raises E.
 -- @tparam ... Arguments to pass to the function.
 -- @treturn Result Returns `Result<T, E>`
+-- @within Result functions
 function outcome.pcall(f, ...)
   local value, err = pcall(f, ...)
   if err then
