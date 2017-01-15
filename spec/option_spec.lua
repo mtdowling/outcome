@@ -12,6 +12,16 @@ describe("Option", function()
       assert.equal("outcome.Option", value.class)
       assert.equal("foo", value:unwrap())
     end)
+
+    it("returns None when nil", function()
+      local value = outcome.option(nil)
+      assert.is_true(value:isNone())
+    end)
+
+    it("returns Some when not nil", function()
+      local value = outcome.option(1)
+      assert.is_true(value:isSome())
+    end)
   end)
 
   describe("when comparing Options", function()

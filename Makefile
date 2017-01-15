@@ -1,3 +1,6 @@
+clean:
+	rm -rf docs
+
 build:
 	@luarocks make rockspecs/$$(ls rockspecs/ | tail -n 1) > /dev/null
 
@@ -13,7 +16,7 @@ test_setup:
 	luarocks install luacov
 	luarocks install luacov-coveralls
 
-docs:
+docs: clean
 	@rm -rf doc && mkdir doc
 	@ldoc outcome.lua
 
@@ -49,4 +52,4 @@ bench: build
 	lua bench/bench.lua
 	luajit bench/bench.lua
 
-.PHONY: test build travis docs publish_docs release
+.PHONY: clean test build travis docs publish_docs release

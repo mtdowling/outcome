@@ -17,8 +17,8 @@ The API documentation can be read online at http://mtdowling.com/outcome/.
 ## Option
 
 The Option type is used to contain a non-nil result that may or may not be
-present. An Option that has no value is *empty*. If an Option has a value, the
-value can be retrieved using `unwrap()`. Calling `unwrap()` on an empty Option
+present. An Option that has no value is *None*. If an Option has a value, the
+value can be retrieved using `unwrap()`. Calling `unwrap()` on a None Option
 will result in an error.
 
 Returning an Option type from a function rather than returning a value that may
@@ -30,9 +30,9 @@ abstractions over the result.
 ```lua
 local outcome = require "outcome"
 
--- Options are either empty or present.
-assert(outcome.none():isEmpty())
-assert(outcome.some("foo"):isPresent())
+-- Options are either None or Some.
+assert(outcome.none():isNone())
+assert(outcome.some("foo"):isSome())
 
 -- You can map over the value in an Option.
 local result = outcome.some(1)
