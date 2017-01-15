@@ -1,0 +1,1286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Outcome documentation</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Outcome</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Class_Option">Class Option </a></li>
+<li><a href="#Class_Result">Class Result </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>outcome</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>outcome</code></h1>
+<p>Outcome: Functional and composable option and result types for Lua.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Class_Option">Class Option </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Option.of">Option.of (value)</a></td>
+	<td class="summary">Create a new Option, wrapping a value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option.empty">Option.empty ()</a></td>
+	<td class="summary">Returns an empty Option.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:isPresent">Option:isPresent ()</a></td>
+	<td class="summary">Returns true if the option contains a value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:isEmpty">Option:isEmpty ()</a></td>
+	<td class="summary">Returns true if the option value is nil.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:unwrap">Option:unwrap ()</a></td>
+	<td class="summary">Returns the value if present, or throws an error.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:expect">Option:expect (message)</a></td>
+	<td class="summary">Unwraps and returns the value if present, or raises a specific error.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:unwrapOr">Option:unwrapOr (defaultValue)</a></td>
+	<td class="summary">Unwraps and returns the value if present, or returns default value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:unwrapOrElse">Option:unwrapOrElse (valueProvider)</a></td>
+	<td class="summary">Unwraps and returns the value if present, or returns the result of invoking
+ a function that when called returns a value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:take">Option:take ()</a></td>
+	<td class="summary">Takes the value out of the option, leaving a nil in its place.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:ifPresent">Option:ifPresent (consumer)</a></td>
+	<td class="summary">Invokes a method with the value if present.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:ifEmpty">Option:ifEmpty (consumer)</a></td>
+	<td class="summary">Invokes a method if the option value is empty.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:andOther">Option:andOther (other)</a></td>
+	<td class="summary">Returns <code>other</code> if the option value is present, otherwise returns self.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:orOther">Option:orOther (other)</a></td>
+	<td class="summary">Returns self if a value is present, otherwise returns <code>other</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:orElseOther">Option:orElseOther (f)</a></td>
+	<td class="summary">Returns self if a value is present, otherwise returns the result of f.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:map">Option:map (f)</a></td>
+	<td class="summary">Maps an <code>Option&lt;T&gt;</code> to <code>Option&lt;U&gt;</code> by applying a function to the contained
+ value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:mapOr">Option:mapOr (defaultValue, f)</a></td>
+	<td class="summary">Applies a function to the contained value (if any), or returns a default.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:mapOrElse">Option:mapOrElse (defaultProvider, mapFunction)</a></td>
+	<td class="summary">Applies a function to the contained value (if any), or computes a default.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:flatmap">Option:flatmap (f)</a></td>
+	<td class="summary">Returns an empty option if the option value is not preset.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:okOr">Option:okOr (err)</a></td>
+	<td class="summary">Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a present value to
+ an Ok Result, and an empty value to Result err.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:okOrElse">Option:okOrElse (errorProvider)</a></td>
+	<td class="summary">Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a present value
+ to an Ok Result, and an empty value to Result err.</td>
+	</tr>
+</table>
+<h2><a href="#Class_Result">Class Result </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Result.ok">Result.ok (value)</a></td>
+	<td class="summary">Create a new Ok Result.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result.err">Result.err (value)</a></td>
+	<td class="summary">Create a new Err Result.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result.pcall">Result.pcall (f, Arguments)</a></td>
+	<td class="summary">Invokes a function and returns a <code>Result&lt;T, E&gt;</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:isOk">Result:isOk ()</a></td>
+	<td class="summary">Returns true if the result is Ok.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:isErr">Result:isErr ()</a></td>
+	<td class="summary">Returns true if the result is an error.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:unwrap">Result:unwrap ()</a></td>
+	<td class="summary">Returns the value if Ok, or raises an error using the error value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:unwrapErr">Result:unwrapErr ()</a></td>
+	<td class="summary">Unwraps a result, yielding the content of an Err.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:expect">Result:expect (message)</a></td>
+	<td class="summary">Unwraps and returns the value if Ok, or errors with a message.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:unwrapOr">Result:unwrapOr (defaultValue)</a></td>
+	<td class="summary">Unwraps and returns the value if Ok, or returns default value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:unwrapOrElse">Result:unwrapOrElse (valueProvider)</a></td>
+	<td class="summary">Unwraps and returns the value if Ok, or returns the result of invoking
+ a method that when called returns a value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:ifOk">Result:ifOk (consumer)</a></td>
+	<td class="summary">Invokes a method with the value if the Result is Ok.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:ifErr">Result:ifErr (consumer)</a></td>
+	<td class="summary">Invokes a method if the Result is an Err and passes the error to consumer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:okOption">Result:okOption ()</a></td>
+	<td class="summary">Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;T&gt;</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:errOption">Result:errOption ()</a></td>
+	<td class="summary">Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;E&gt;</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:andOther">Result:andOther (other)</a></td>
+	<td class="summary">Returns other if the result is Ok, otherwise returns the Err value of self.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:orOther">Result:orOther (other)</a></td>
+	<td class="summary">Returns other if the result is Err, otherwise returns self.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:orElseOther">Result:orElseOther (resultProvider)</a></td>
+	<td class="summary">Calls resultProvider if the result is Err, otherwise returns self.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:map">Result:map (f)</a></td>
+	<td class="summary">Maps a <code>Result&lt;T, E&gt;</code> to <code>Result&lt;U, E&gt;</code> by applying a function to a
+ contained Ok value, leaving an Err value untouched.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:mapErr">Result:mapErr (f)</a></td>
+	<td class="summary">Maps a <code>Result&lt;T, E&gt;</code> to <code>Result&lt;T, F&gt;</code> by applying a function to a
+ contained Err value, leaving an Ok value untouched.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:flatmap">Result:flatmap (f)</a></td>
+	<td class="summary">Calls f if the result is Ok, otherwise returns the Err value of self.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header has-description"><a name="Class_Option"></a>Class Option </h2>
+
+          <div class="section-description">
+          Option type. </p>
+
+<p> The Option class is used as a functional replacement for null. Using Option
+ provides a composable mechanism for working with values that may or may not
+ be present. This Option implementation is heavily inspired by the Option
+ type in Rust, and somewhat by the Optional type in Java.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "Option.of"></a>
+    <strong>Option.of (value)</strong>
+    </dt>
+    <dd>
+    Create a new Option, wrapping a value.
+ If the provided value is nil, then the Option is considered empty.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         Value T to wrap.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        <code>Option&lt;T&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option.empty"></a>
+    <strong>Option.empty ()</strong>
+    </dt>
+    <dd>
+    Returns an empty Option.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;T&gt;</code></li>
+        <li>
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        <code>Option&lt;T&gt;</code></li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:isPresent"></a>
+    <strong>Option:isPresent ()</strong>
+    </dt>
+    <dd>
+    Returns true if the option contains a value.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:isEmpty"></a>
+    <strong>Option:isEmpty ()</strong>
+    </dt>
+    <dd>
+    Returns true if the option value is nil.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:unwrap"></a>
+    <strong>Option:unwrap ()</strong>
+    </dt>
+    <dd>
+    Returns the value if present, or throws an error.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T the wrapped option.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:expect"></a>
+    <strong>Option:expect (message)</strong>
+    </dt>
+    <dd>
+    Unwraps and returns the value if present, or raises a specific error.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         Message to raise.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T returns the wrapped value.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:unwrapOr"></a>
+    <strong>Option:unwrapOr (defaultValue)</strong>
+    </dt>
+    <dd>
+    Unwraps and returns the value if present, or returns default value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">defaultValue</span>
+         Default value T to return.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T returns the wrapped value or the default.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:unwrapOrElse"></a>
+    <strong>Option:unwrapOrElse (valueProvider)</strong>
+    </dt>
+    <dd>
+    Unwraps and returns the value if present, or returns the result of invoking
+ a function that when called returns a value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">valueProvider</span>
+            <span class="types"><span class="type">function</span></span>
+         to invoke if the value is empty.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T returns the wrapped value or the value returned from valueProvider.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:take"></a>
+    <strong>Option:take ()</strong>
+    </dt>
+    <dd>
+    Takes the value out of the option, leaving a nil in its place.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;T&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:ifPresent"></a>
+    <strong>Option:ifPresent (consumer)</strong>
+    </dt>
+    <dd>
+    Invokes a method with the value if present.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">consumer</span>
+            <span class="types"><span class="type">function</span></span>
+         Consumer to invoke with a side effect.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:ifEmpty"></a>
+    <strong>Option:ifEmpty (consumer)</strong>
+    </dt>
+    <dd>
+    Invokes a method if the option value is empty.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">consumer</span>
+            <span class="types"><span class="type">function</span></span>
+         Method to invoke if the value is empty.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:andOther"></a>
+    <strong>Option:andOther (other)</strong>
+    </dt>
+    <dd>
+    Returns <code>other</code> if the option value is present, otherwise returns self.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">other</span>
+            <span class="types"><a class="type" href="index.html#Option">`Option<T>`</a></span>
+         Alternative Option to return.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;T&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:orOther"></a>
+    <strong>Option:orOther (other)</strong>
+    </dt>
+    <dd>
+    Returns self if a value is present, otherwise returns <code>other</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">other</span>
+            <span class="types"><a class="type" href="index.html#Option">`Option<T>`</a></span>
+         Alternative Option to return.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;T&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:orElseOther"></a>
+    <strong>Option:orElseOther (f)</strong>
+    </dt>
+    <dd>
+    Returns self if a value is present, otherwise returns the result of f.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that returns an <code>Option&lt;T&gt;</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;T&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:map"></a>
+    <strong>Option:map (f)</strong>
+    </dt>
+    <dd>
+    Maps an <code>Option&lt;T&gt;</code> to <code>Option&lt;U&gt;</code> by applying a function to the contained
+ value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that accepts T and returns U.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;U&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:mapOr"></a>
+    <strong>Option:mapOr (defaultValue, f)</strong>
+    </dt>
+    <dd>
+    Applies a function to the contained value (if any), or returns a default.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">defaultValue</span>
+         Value U to return if the option is empty.
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that accepts T and returns U.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;U&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:mapOrElse"></a>
+    <strong>Option:mapOrElse (defaultProvider, mapFunction)</strong>
+    </dt>
+    <dd>
+    Applies a function to the contained value (if any), or computes a default.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">defaultProvider</span>
+            <span class="types"><span class="type">function</span></span>
+         Default function to invoke that returns U.
+        </li>
+        <li><span class="parameter">mapFunction</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that accepts T and returns U.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;U&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:flatmap"></a>
+    <strong>Option:flatmap (f)</strong>
+    </dt>
+    <dd>
+    Returns an empty option if the option value is not preset.  Otherwise calls
+ f with the wrapped value and returns the result.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that accepts T and returns <code>Option&lt;U&gt;</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;U&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:okOr"></a>
+    <strong>Option:okOr (err)</strong>
+    </dt>
+    <dd>
+    Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a present value to
+ an Ok Result, and an empty value to Result err.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">err</span>
+            <span class="types"><span class="type">function</span></span>
+         Error to use in the Result if the value is empty.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:okOrElse"></a>
+    <strong>Option:okOrElse (errorProvider)</strong>
+    </dt>
+    <dd>
+    Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a present value
+ to an Ok Result, and an empty value to Result err.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">errorProvider</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that returns E.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_Result"></a>Class Result </h2>
+
+          <div class="section-description">
+
+<p><code>Result&lt;T, E&gt;</code> is a type used for returning and propagating errors. </p>
+
+<p> There are two kinds of Result objects:</p>
+
+<ul>
+    <li>Ok: the result contains a successful value.</li>
+    <li>Err: The result contains an error value.</li>
+</ul>
+
+
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "Result.ok"></a>
+    <strong>Result.ok (value)</strong>
+    </dt>
+    <dd>
+    Create a new Ok Result.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">T</span></span>
+         Ok value to wrap.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result.err"></a>
+    <strong>Result.err (value)</strong>
+    </dt>
+    <dd>
+    Create a new Err Result.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">T</span></span>
+         Error value to wrap.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result.pcall"></a>
+    <strong>Result.pcall (f, Arguments)</strong>
+    </dt>
+    <dd>
+    Invokes a function and returns a <code>Result&lt;T, E&gt;</code>.
+ If the function errors, an Err Result is returned.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Function to invoke that returns T or raises E.
+        </li>
+        <li><span class="parameter">Arguments</span>
+            <span class="types"><span class="type">...</span></span>
+         to pass to the function.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:isOk"></a>
+    <strong>Result:isOk ()</strong>
+    </dt>
+    <dd>
+    Returns true if the result is Ok.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:isErr"></a>
+    <strong>Result:isErr ()</strong>
+    </dt>
+    <dd>
+    Returns true if the result is an error.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:unwrap"></a>
+    <strong>Result:unwrap ()</strong>
+    </dt>
+    <dd>
+    Returns the value if Ok, or raises an error using the error value.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T the wrapped result value.
+    </ol>
+
+    <h3>Raises:</h3>
+    Errors with if the result is Err.
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:unwrapErr"></a>
+    <strong>Result:unwrapErr ()</strong>
+    </dt>
+    <dd>
+    Unwraps a result, yielding the content of an Err.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        E the error value.
+    </ol>
+
+    <h3>Raises:</h3>
+    Errors if the value is Ok.
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:expect"></a>
+    <strong>Result:expect (message)</strong>
+    </dt>
+    <dd>
+    Unwraps and returns the value if Ok, or errors with a message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         Message to include in the error.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T returns the wrapped value.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:unwrapOr"></a>
+    <strong>Result:unwrapOr (defaultValue)</strong>
+    </dt>
+    <dd>
+    Unwraps and returns the value if Ok, or returns default value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">defaultValue</span>
+         Default value T to return.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T returns the wrapped value or the default.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:unwrapOrElse"></a>
+    <strong>Result:unwrapOrElse (valueProvider)</strong>
+    </dt>
+    <dd>
+    Unwraps and returns the value if Ok, or returns the result of invoking
+ a method that when called returns a value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">valueProvider</span>
+            <span class="types"><span class="type">function</span></span>
+         Function to invoke if the value is an error.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T returns the Ok value or the value returned from valueProvider.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:ifOk"></a>
+    <strong>Result:ifOk (consumer)</strong>
+    </dt>
+    <dd>
+    Invokes a method with the value if the Result is Ok.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">consumer</span>
+            <span class="types"><span class="type">function</span></span>
+         Consumer to invoke with a side effect.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:ifErr"></a>
+    <strong>Result:ifErr (consumer)</strong>
+    </dt>
+    <dd>
+    Invokes a method if the Result is an Err and passes the error to consumer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">consumer</span>
+            <span class="types"><span class="type">function</span></span>
+         Method to invoke if the value is error.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:okOption"></a>
+    <strong>Result:okOption ()</strong>
+    </dt>
+    <dd>
+    Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;T&gt;</code>.
+ Converts self into an <code>Option&lt;T&gt;</code>, consuming self, and discarding the error,
+ if any.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:errOption"></a>
+    <strong>Result:errOption ()</strong>
+    </dt>
+    <dd>
+    Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;E&gt;</code>.
+ Converts self into an <code>Option&lt;E&gt;</code>, consuming self, and discarding the
+ success value, if any.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:andOther"></a>
+    <strong>Result:andOther (other)</strong>
+    </dt>
+    <dd>
+    Returns other if the result is Ok, otherwise returns the Err value of self.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">other</span>
+            <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+         <code>Result&lt;T, E&gt;</code> other Alternative Result to return.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:orOther"></a>
+    <strong>Result:orOther (other)</strong>
+    </dt>
+    <dd>
+    Returns other if the result is Err, otherwise returns self.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">other</span>
+            <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+         <code>Result&lt;T, E&gt;</code> other Alternative Result to return.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:orElseOther"></a>
+    <strong>Result:orElseOther (resultProvider)</strong>
+    </dt>
+    <dd>
+    Calls resultProvider if the result is Err, otherwise returns self. </p>
+
+<p> This function can be used for control flow based on result values.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">resultProvider</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that returns <code>Result&lt;T, E&gt;</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:map"></a>
+    <strong>Result:map (f)</strong>
+    </dt>
+    <dd>
+    Maps a <code>Result&lt;T, E&gt;</code> to <code>Result&lt;U, E&gt;</code> by applying a function to a
+ contained Ok value, leaving an Err value untouched. </p>
+
+<p> This function can be used to compose the results of two functions.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that accepts <code>T</code> and returns <code>U</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;U, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:mapErr"></a>
+    <strong>Result:mapErr (f)</strong>
+    </dt>
+    <dd>
+    Maps a <code>Result&lt;T, E&gt;</code> to <code>Result&lt;T, F&gt;</code> by applying a function to a
+ contained Err value, leaving an Ok value untouched. </p>
+
+<p> This function can be used to pass through a successful result while handling
+ an error.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that accepts <code>E</code> and returns <code>U</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, F&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:flatmap"></a>
+    <strong>Result:flatmap (f)</strong>
+    </dt>
+    <dd>
+    Calls f if the result is Ok, otherwise returns the Err value of self. </p>
+
+<p> This function can be used for control flow based on Result values.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that accepts T and returns <code>Result&lt;T. E&gt;</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-01-14 18:05:00 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

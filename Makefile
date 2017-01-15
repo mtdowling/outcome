@@ -17,4 +17,16 @@ docs:
 travis: test
 	luacheck --no-unused-args --std max+busted *.lua spec
 
+release_docs: docs
+	rm -rf /tmp/outcome-docs || true
+	mkdir /tmp/outcome-docs
+	cp build/* /tmp/outcome-docs
+	git checkout docs
+	cp /tmp/outcome-docs/* ./
+	rm -rf /tmp/outcome-docs || true
+	git add -A
+	git commit -m "Updating documentation"
+	git push origin docs
+	git checkout master
+
 .PHONY: test build travis docs
