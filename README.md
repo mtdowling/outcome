@@ -3,7 +3,10 @@
 [![Build Status](https://travis-ci.org/mtdowling/outcome.png?branch=master)](https://travis-ci.org/mtdowling/outcome)
 [![Coverage Status](https://coveralls.io/repos/mtdowling/outcome/badge.svg?branch=master&service=github)](https://coveralls.io/github/mtdowling/outcome?branch=master)
 
-Outcome: functional and composable option and result types for Lua.
+Outcome: functional and composable option and result types for Lua. Outcome's
+API is heavily inspired and based up the Rust
+[Option](https://doc.rust-lang.org/std/option/enum.Option.html) and
+[Result](https://doc.rust-lang.org/std/result/enum.Result.html) types.
 
 * [Option](#option)
 * [Result](#result)
@@ -21,6 +24,8 @@ will result in an error.
 Returning an Option type from a function rather than returning a value that may
 be `nil` helps to avoid null pointer errors and provides composable
 abstractions over the result.
+
+**Examples**
 
 ```lua
 local outcome = require "outcome"
@@ -45,6 +50,15 @@ assert("foo" == Option.empty():unwrapOr("foo"))
 
 
 ## Result
+
+`Result<T, E>` is a type used for returning and propagating errors.
+
+There are two kinds of Result objects:
+
+* Ok: the result contains a successful value.
+* Err: The result contains an error value.
+
+**Examples**
 
 ```lua
 local outcome = require "outcome"
