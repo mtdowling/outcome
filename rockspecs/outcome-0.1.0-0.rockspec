@@ -3,7 +3,7 @@ version = '0.1.0-0'
 
 source = {
    url = 'git://github.com/mtdowling/outcome',
-   tag = '0.1.0-0',
+   tag = '0.1.0',
 }
 
 description = {
