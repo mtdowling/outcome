@@ -112,9 +112,6 @@ After busted is installed, execute the following command to run the tests:
 make test
 ```
 
-
-## Tests
-
 There's a really simply benchmark tool that can be run using the following
 command:
 

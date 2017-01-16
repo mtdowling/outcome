@@ -231,6 +231,12 @@ function Option:mapOrElse(defaultProvider, mapFunction) end
 -- @treturn Option Returns `Option<U>`
 function Option:flatmap(f) end
 
+--- Filters a Some Option through `f` and if `f` returns false, creates a
+-- None Option. None Option is returned as-is and not passed to `f`.
+-- @tparam function f Filter function that receives a value and returns bool.
+-- @treturn Option Returns `Option<T>`
+function Option:filter(f) end
+
 --- Transforms the `Option<T>` into a `Result<T, E>`, mapping a Some value to
 -- an Ok Result, and an None value to Result err.
 --
@@ -330,6 +336,10 @@ function None:mapOrElse(defaultProvider, _)
   return outcome.some(defaultProvider())
 end
 
+function None:filter(_)
+  return self
+end
+
 function None:okOr(err)
   return outcome.outcome.err(err)
 end
@@ -409,6 +419,14 @@ end
 
 function Some:flatmap(f)
   return assertOption(f(self._value))
+end
+
+function Some:filter(f)
+  if f(self._value) then
+    return self
+  else
+    return outcome._NONE_OPTION
+  end
 end
 
 function Some:okOr(_)
