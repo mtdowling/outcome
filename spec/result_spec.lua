@@ -30,7 +30,7 @@ describe("Result", function()
       assert.is_false(a == b)
     end)
 
-    it("gracefully handles nil comparisons", function()
+    it("gracefully handles nil Ok comparisons", function()
       local a = outcome.ok("a")
       local b = outcome.ok(nil)
       assert.is_false(a == b)
@@ -38,11 +38,38 @@ describe("Result", function()
       assert.is_false(a <= b)
     end)
 
-    it("checks for less than", function()
+    it("gracefully handles nil Err comparisons", function()
+      local a = outcome.err("a")
+      local b = outcome.err(nil)
+      assert.is_false(a == b)
+      assert.is_false(a < b)
+      assert.is_false(a <= b)
+    end)
+
+    it("checks for less than Ok", function()
       local a = outcome.ok(1)
       local b = outcome.ok(2)
       assert.is_true(a < b)
       assert.is_true(a <= b)
+    end)
+
+    it("checks for less than Err", function()
+      local a = outcome.err(1)
+      local b = outcome.err(2)
+      assert.is_true(a < b)
+      assert.is_true(a <= b)
+    end)
+
+    it("checks between Ok vs Err", function()
+      if string.find(_VERSION, "Lua 5.[23]") then
+        local a = outcome.ok(1)
+        local b = outcome.err(2)
+        assert.is_false(a < b)
+        assert.is_false(a <= b)
+        assert.is_false(a == b)
+      else
+        print("Skipping because not on Lua 5.2 or 5.3")
+      end
     end)
   end)
 

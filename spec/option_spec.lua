@@ -34,12 +34,16 @@ describe("Option", function()
       assert.is_false(a == b)
     end)
 
-    it("gracefully handles nil comparisons", function()
-      local a = outcome.none()
-      local b = outcome.some("a")
-      assert.is_false(a == b)
-      assert.is_true(a < b)
-      assert.is_true(a <= b)
+    it("handles Some vs None comparisons", function()
+      if string.find(_VERSION, "Lua 5.[23]") then
+        local a = outcome.none()
+        local b = outcome.some("a")
+        assert.is_false(a == b)
+        assert.is_true(a < b)
+        assert.is_true(a <= b)
+      else
+        print("Skipping because not on Lua 5.2 or 5.3")
+      end
     end)
 
     it("checks for less than", function()
