@@ -85,20 +85,24 @@ function Option:isSome() end
 -- @treturn bool
 function Option:isNone() end
 
---- Invokes a method with the value if Some.
+--- Invokes a method with the value if Some. The return value of the
+-- function is ignored.
 --
 --    local opt = outcome.some("abc")
 --    opt:ifSome(function(value) print(value) end)
 --
 -- @tparam function consumer Consumer to invoke with a side effect.
+-- @treturn Option Returns self.
 function Option:ifSome(consumer) end
 
---- Invokes a method if the option value is None.
+--- Invokes a method if the option value is None. The return value of the
+-- function is ignored.
 --
 --    local opt = outcome.none()
 --    opt:ifNone(function(value) print("It's None!") end)
 --
 -- @tparam function consumer Method to invoke if the value is None.
+-- @treturn Option Returns self.
 function Option:ifNone(consumer) end
 
 --- Returns the value if Some, or throws an error.
@@ -301,11 +305,12 @@ function None:unwrapOrElse(valueProvider)
 end
 
 function None:ifSome(_)
-  -- pass
+  return self
 end
 
 function None:ifNone(consumer)
   consumer()
+  return self
 end
 
 function None:andOther(_)
@@ -387,10 +392,11 @@ end
 
 function Some:ifSome(consumer)
   consumer(self._value)
+  return self
 end
 
 function Some:ifNone(_)
-  -- pass
+  return self
 end
 
 function Some:andOther(other)
@@ -521,12 +527,16 @@ function Result:isOk() end
 -- @treturn bool
 function Result:isErr() end
 
---- Invokes a method with the value if the Result is Ok.
+--- Invokes a method with the value if the Result is Ok. The return value of
+-- the function is ignored.
 -- @tparam function consumer Consumer to invoke with a side effect.
+-- @treturn Option Returns self.
 function Result:ifOk(consumer) end
 
 --- Invokes a method if the Result is an Err and passes the error to consumer.
+-- The return value of the function is ignored.
 -- @tparam function consumer Method to invoke if the value is error.
+-- @treturn Option Returns self.
 function Result:ifErr(consumer) end
 
 --- Returns the value if Ok, or raises an error using the error value.
@@ -699,10 +709,11 @@ end
 
 function Ok:ifOk(consumer)
   consumer(self._value)
+  return self
 end
 
 function Ok:ifErr(_)
-  -- pass
+  return self
 end
 
 function Ok:okOption()
@@ -779,11 +790,12 @@ function Err:unwrapOrElse(valueProvider)
 end
 
 function Err:ifOk(_)
-  -- pass
+  return self
 end
 
 function Err:ifErr(consumer)
   consumer(self._value)
+  return self
 end
 
 function Err:okOption()
