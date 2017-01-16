@@ -31,13 +31,14 @@
 <ul>
 <li><a href="#Class_Option">Class Option </a></li>
 <li><a href="#Class_Result">Class Result </a></li>
+<li><a href="#Option_functions">Option functions</a></li>
+<li><a href="#Result_functions">Result functions</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul class="nowrap">
   <li><strong>outcome</strong></li>
-</ul>
 </ul>
 
 </div>
@@ -52,7 +53,6 @@
 
 <pre>
 <span class="keyword">local</span> outcome = <span class="global">require</span> <span class="string">"outcome"</span>
-<span class="keyword">local</span> Option, Result = outcome.Option, outcome.Result
 </pre>
 
 </p>
@@ -61,61 +61,49 @@
 <h2><a href="#Class_Option">Class Option </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Option.of">Option.of (value)</a></td>
-	<td class="summary">Create a new Option, wrapping a value.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Option.empty">Option.empty ()</a></td>
-	<td class="summary">Returns an empty Option.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Option:isPresent">Option:isPresent ()</a></td>
+	<td class="name" nowrap><a href="#Option:isSome">Option:isSome ()</a></td>
 	<td class="summary">Returns true if the option contains a value.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Option:isEmpty">Option:isEmpty ()</a></td>
+	<td class="name" nowrap><a href="#Option:isNone">Option:isNone ()</a></td>
 	<td class="summary">Returns true if the option value is nil.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Option:unwrap">Option:unwrap ()</a></td>
-	<td class="summary">Returns the value if present, or throws an error.</td>
+	<td class="name" nowrap><a href="#Option:ifSome">Option:ifSome (consumer)</a></td>
+	<td class="summary">Invokes a method with the value if Some.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Option:expect">Option:expect (message)</a></td>
-	<td class="summary">Unwraps and returns the value if present, or raises a specific error.</td>
+	<td class="name" nowrap><a href="#Option:ifNone">Option:ifNone (consumer)</a></td>
+	<td class="summary">Invokes a method if the option value is None.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:unwrap">Option:unwrap ()</a></td>
+	<td class="summary">Returns the value if Some, or throws an error.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Option:unwrapOr">Option:unwrapOr (defaultValue)</a></td>
-	<td class="summary">Unwraps and returns the value if present, or returns default value.</td>
+	<td class="summary">Unwraps and returns the value if Some, or returns default value.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Option:unwrapOrElse">Option:unwrapOrElse (valueProvider)</a></td>
-	<td class="summary">Unwraps and returns the value if present, or returns the result of invoking
+	<td class="summary">Unwraps and returns the value if Some, or returns the result of invoking
  a function that when called returns a value.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Option:take">Option:take ()</a></td>
-	<td class="summary">Takes the value out of the option, leaving a nil in its place.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Option:ifPresent">Option:ifPresent (consumer)</a></td>
-	<td class="summary">Invokes a method with the value if present.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Option:ifEmpty">Option:ifEmpty (consumer)</a></td>
-	<td class="summary">Invokes a method if the option value is empty.</td>
+	<td class="name" nowrap><a href="#Option:expect">Option:expect (message)</a></td>
+	<td class="summary">Unwraps and returns the value if Some, or raises a specific error.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Option:andOther">Option:andOther (other)</a></td>
-	<td class="summary">Returns <code>other</code> if the option value is present, otherwise returns self.</td>
+	<td class="summary">Returns <code>other</code> if the option value is Some, otherwise returns self.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Option:orOther">Option:orOther (other)</a></td>
-	<td class="summary">Returns self if a value is present, otherwise returns <code>other</code>.</td>
+	<td class="summary">Returns self if a value is Some, otherwise returns <code>other</code>.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Option:orElseOther">Option:orElseOther (f)</a></td>
-	<td class="summary">Returns self if a value is present, otherwise returns the result of f.</td>
+	<td class="summary">Returns self if a value is Some, otherwise returns the result of f.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Option:map">Option:map (f)</a></td>
@@ -132,33 +120,26 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Option:flatmap">Option:flatmap (f)</a></td>
-	<td class="summary">Returns an empty option if the option value is not preset.</td>
+	<td class="summary">Returns an None option if the option value is not preset.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Option:filter">Option:filter (f)</a></td>
+	<td class="summary">Filters a Some Option through <code>f</code> and if <code>f</code> returns false, creates a
+ None Option.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Option:okOr">Option:okOr (err)</a></td>
-	<td class="summary">Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a present value to
- an Ok Result, and an empty value to Result err.</td>
+	<td class="summary">Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a Some value to
+ an Ok Result, and an None value to Result err.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Option:okOrElse">Option:okOrElse (errorProvider)</a></td>
-	<td class="summary">Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a present value
- to an Ok Result, and an empty value to Result err.</td>
+	<td class="summary">Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a Some value
+ to an Ok Result, and an None value to Result err.</td>
 	</tr>
 </table>
 <h2><a href="#Class_Result">Class Result </a></h2>
 <table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#Result.ok">Result.ok (value)</a></td>
-	<td class="summary">Create a new Ok Result.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Result.err">Result.err (value)</a></td>
-	<td class="summary">Create a new Err Result.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Result.pcall">Result.pcall (f, Arguments)</a></td>
-	<td class="summary">Invokes a function and returns a <code>Result&lt;T, E&gt;</code>.</td>
-	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Result:isOk">Result:isOk ()</a></td>
 	<td class="summary">Returns true if the result is Ok.</td>
@@ -168,16 +149,20 @@
 	<td class="summary">Returns true if the result is an error.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Result:ifOk">Result:ifOk (consumer)</a></td>
+	<td class="summary">Invokes a method with the value if the Result is Ok.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:ifErr">Result:ifErr (consumer)</a></td>
+	<td class="summary">Invokes a method if the Result is an Err and passes the error to consumer.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Result:unwrap">Result:unwrap ()</a></td>
 	<td class="summary">Returns the value if Ok, or raises an error using the error value.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Result:unwrapErr">Result:unwrapErr ()</a></td>
 	<td class="summary">Unwraps a result, yielding the content of an Err.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Result:expect">Result:expect (message)</a></td>
-	<td class="summary">Unwraps and returns the value if Ok, or errors with a message.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Result:unwrapOr">Result:unwrapOr (defaultValue)</a></td>
@@ -189,20 +174,8 @@
  a method that when called returns a value.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Result:ifOk">Result:ifOk (consumer)</a></td>
-	<td class="summary">Invokes a method with the value if the Result is Ok.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Result:ifErr">Result:ifErr (consumer)</a></td>
-	<td class="summary">Invokes a method if the Result is an Err and passes the error to consumer.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Result:okOption">Result:okOption ()</a></td>
-	<td class="summary">Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;T&gt;</code>.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Result:errOption">Result:errOption ()</a></td>
-	<td class="summary">Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;E&gt;</code>.</td>
+	<td class="name" nowrap><a href="#Result:expect">Result:expect (message)</a></td>
+	<td class="summary">Unwraps and returns the value if Ok, or errors with a message.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Result:andOther">Result:andOther (other)</a></td>
@@ -230,6 +203,44 @@
 	<td class="name" nowrap><a href="#Result:flatmap">Result:flatmap (f)</a></td>
 	<td class="summary">Calls f if the result is Ok, otherwise returns the Err value of self.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:okOption">Result:okOption ()</a></td>
+	<td class="summary">Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;T&gt;</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Result:errOption">Result:errOption ()</a></td>
+	<td class="summary">Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;E&gt;</code>.</td>
+	</tr>
+</table>
+<h2><a href="#Option_functions">Option functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#option">option (value)</a></td>
+	<td class="summary">Returns either a None or Some Option based on if the value == nil.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#some">some (value)</a></td>
+	<td class="summary">Create a new Option, wrapping a value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#none">none ()</a></td>
+	<td class="summary">Returns a None Option.</td>
+	</tr>
+</table>
+<h2><a href="#Result_functions">Result functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ok">ok (value)</a></td>
+	<td class="summary">Create a new Ok Result.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#err">err (value)</a></td>
+	<td class="summary">Create a new Err Result.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pcall">pcall (f, Arguments)</a></td>
+	<td class="summary">Invokes a function and returns a <code>Result&lt;T, E&gt;</code>.</td>
+	</tr>
 </table>
 
 <br/>
@@ -250,99 +261,30 @@
 <p> <strong>Examples</strong></p>
 
 <pre><code>local outcome = require "outcome"
-local Option = outcome.Option
 
--- Options are either empty or present.
-assert(Option.empty():isEmpty())
-assert(Option.of("foo"):isPresent())
+-- Options are either Some or None.
+assert(outcome.none():isNone())
+assert(outcome.some("foo"):isSome())
 
 -- You can map over the value in an Option.
-local result = Option.of(1)
+local result = outcome.some(1)
     :map(function(value) return value + 1 end)
     :unwrap()
 assert(result == 2)
 
 -- Raises an error with the message provided in expect.
-Option.empty():expect("Expected a value"):
+outcome.none():expect("Expected a value"):
 
 -- You can provide a default value when unwrapping an Option.
-assert("foo" == Option.empty():unwrapOr("foo"))
+assert("foo" == outcome.none():unwrapOr("foo"))
 </code></pre>
 
 
           </div>
     <dl class="function">
     <dt>
-    <a name = "Option.of"></a>
-    <strong>Option.of (value)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#97">line 97</a>
-    </dt>
-    <dd>
-
-<p>Create a new Option, wrapping a value.
- If the provided value is nil, then the Option is considered empty.</p>
-
-<pre><code>local opt = Option.of("abc")
-assert(opt:isPresent())
-assert("abc" == opt:unwrap())
-</code></pre>
-
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">value</span>
-         Value T to wrap.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
-        <code>Option&lt;T&gt;</code>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Option.empty"></a>
-    <strong>Option.empty ()</strong>
-    <a style="float:right;" href="source/outcome.lua.html#108">line 108</a>
-    </dt>
-    <dd>
-
-<p>Returns an empty Option. </p>
-
-<pre><code>local opt = Option.empty()
-assert(opt:isEmpty())
-</code></pre>
-
-
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
-        Returns <code>Option&lt;T&gt;</code></li>
-        <li>
-           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
-        <code>Option&lt;T&gt;</code></li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Option:isPresent"></a>
-    <strong>Option:isPresent ()</strong>
-    <a style="float:right;" href="source/outcome.lua.html#114">line 114</a>
+    <a name = "Option:isSome"></a>
+    <strong>Option:isSome ()</strong>
     </dt>
     <dd>
     Returns true if the option contains a value.
@@ -363,9 +305,8 @@ assert(opt:isEmpty())
 
 </dd>
     <dt>
-    <a name = "Option:isEmpty"></a>
-    <strong>Option:isEmpty ()</strong>
-    <a style="float:right;" href="source/outcome.lua.html#120">line 120</a>
+    <a name = "Option:isNone"></a>
+    <strong>Option:isNone ()</strong>
     </dt>
     <dd>
     Returns true if the option value is nil.
@@ -386,12 +327,67 @@ assert(opt:isEmpty())
 
 </dd>
     <dt>
-    <a name = "Option:unwrap"></a>
-    <strong>Option:unwrap ()</strong>
-    <a style="float:right;" href="source/outcome.lua.html#126">line 126</a>
+    <a name = "Option:ifSome"></a>
+    <strong>Option:ifSome (consumer)</strong>
     </dt>
     <dd>
-    Returns the value if present, or throws an error.
+
+<p>Invokes a method with the value if Some. </p>
+
+<pre><code>local opt = outcome.some("abc")
+opt:ifSome(function(value) print(value) end)
+</code></pre>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">consumer</span>
+            <span class="types"><span class="type">function</span></span>
+         Consumer to invoke with a side effect.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:ifNone"></a>
+    <strong>Option:ifNone (consumer)</strong>
+    </dt>
+    <dd>
+
+<p>Invokes a method if the option value is None. </p>
+
+<pre><code>local opt = outcome.none()
+opt:ifNone(function(value) print("It's None!") end)
+</code></pre>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">consumer</span>
+            <span class="types"><span class="type">function</span></span>
+         Method to invoke if the value is None.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Option:unwrap"></a>
+    <strong>Option:unwrap ()</strong>
+    </dt>
+    <dd>
+    Returns the value if Some, or throws an error.
 
 
 
@@ -406,49 +402,14 @@ assert(opt:isEmpty())
 
 </dd>
     <dt>
-    <a name = "Option:expect"></a>
-    <strong>Option:expect (message)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#137">line 137</a>
-    </dt>
-    <dd>
-
-<p>Unwraps and returns the value if present, or raises a specific error. </p>
-
-<pre><code>local option = Option.of("foo")
-local value = option:expect("Error message")
-</code></pre>
-
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">message</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
-         Message to raise.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        T returns the wrapped value.
-    </ol>
-
-
-
-
-</dd>
-    <dt>
     <a name = "Option:unwrapOr"></a>
     <strong>Option:unwrapOr (defaultValue)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#149">line 149</a>
     </dt>
     <dd>
 
-<p>Unwraps and returns the value if present, or returns default value. </p>
+<p>Unwraps and returns the value if Some, or returns default value. </p>
 
-<pre><code>local opt = Option.empty()
+<pre><code>local opt = outcome.none()
 assert("foo", opt:unwrapOr("foo"))
 </code></pre>
 
@@ -475,14 +436,13 @@ assert("foo", opt:unwrapOr("foo"))
     <dt>
     <a name = "Option:unwrapOrElse"></a>
     <strong>Option:unwrapOrElse (valueProvider)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#165">line 165</a>
     </dt>
     <dd>
 
-<p>Unwraps and returns the value if present, or returns the result of invoking
+<p>Unwraps and returns the value if Some, or returns the result of invoking
  a function that when called returns a value. </p>
 
-<pre><code>local opt = Option.empty()
+<pre><code>local opt = outcome.none()
 assert("foo", opt:unwrapOrElse(function() return "foo" end))
 </code></pre>
 
@@ -493,7 +453,7 @@ assert("foo", opt:unwrapOrElse(function() return "foo" end))
     <ul>
         <li><span class="parameter">valueProvider</span>
             <span class="types"><span class="type">function</span></span>
-         to invoke if the value is empty.
+         to invoke if the value is None.
         </li>
     </ul>
 
@@ -508,88 +468,33 @@ assert("foo", opt:unwrapOrElse(function() return "foo" end))
 
 </dd>
     <dt>
-    <a name = "Option:take"></a>
-    <strong>Option:take ()</strong>
-    <a style="float:right;" href="source/outcome.lua.html#181">line 181</a>
+    <a name = "Option:expect"></a>
+    <strong>Option:expect (message)</strong>
     </dt>
     <dd>
 
-<p>Takes the value out of the option, leaving a nil in its place. </p>
+<p>Unwraps and returns the value if Some, or raises a specific error. </p>
 
-<pre><code>local optA = Option.of("foo")
-local optB = optA:take()
-assert("foo", optB:unwrap())
-assert(optA:isEmpty())
+<pre><code>local option = outcome.some("foo")
+local value = option:expect("Error message")
 </code></pre>
 
 
 
 
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         Message to raise.
+        </li>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
-        Returns <code>Option&lt;T&gt;</code>
+        T returns the wrapped value.
     </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Option:ifPresent"></a>
-    <strong>Option:ifPresent (consumer)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#196">line 196</a>
-    </dt>
-    <dd>
-
-<p>Invokes a method with the value if present. </p>
-
-<pre><code>local opt = Option.of("abc")
-opt:ifPresent(function(value) print(value) end)
-</code></pre>
-
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">consumer</span>
-            <span class="types"><span class="type">function</span></span>
-         Consumer to invoke with a side effect.
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Option:ifEmpty"></a>
-    <strong>Option:ifEmpty (consumer)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#208">line 208</a>
-    </dt>
-    <dd>
-
-<p>Invokes a method if the option value is empty. </p>
-
-<pre><code>local opt = Option.empty()
-opt:ifEmpty(function(value) print("It's empty!") end)
-</code></pre>
-
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">consumer</span>
-            <span class="types"><span class="type">function</span></span>
-         Method to invoke if the value is empty.
-        </li>
-    </ul>
-
 
 
 
@@ -598,14 +503,13 @@ opt:ifEmpty(function(value) print("It's empty!") end)
     <dt>
     <a name = "Option:andOther"></a>
     <strong>Option:andOther (other)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#222">line 222</a>
     </dt>
     <dd>
 
-<p>Returns <code>other</code> if the option value is present, otherwise returns self. </p>
+<p>Returns <code>other</code> if the option value is Some, otherwise returns self. </p>
 
-<pre><code>local optA = Option.of("abc")
-local optB = Option.of("123")
+<pre><code>local optA = outcome.some("abc")
+local optB = outcome.some("123")
 assert(optB = optA:andOther(optB))
 </code></pre>
 
@@ -615,8 +519,8 @@ assert(optB = optA:andOther(optB))
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">other</span>
-            <span class="types"><a class="type" href="index.html#Option">`Option<T>`</a></span>
-         Alternative Option to return.
+            <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+         Alternative <code>Option&lt;T&gt;</code> to return.
         </li>
     </ul>
 
@@ -634,14 +538,13 @@ assert(optB = optA:andOther(optB))
     <dt>
     <a name = "Option:orOther"></a>
     <strong>Option:orOther (other)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#238">line 238</a>
     </dt>
     <dd>
 
-<p>Returns self if a value is present, otherwise returns <code>other</code>. </p>
+<p>Returns self if a value is Some, otherwise returns <code>other</code>. </p>
 
-<pre><code>local optA = Option.empty()
-local optB = Option.of("123")
+<pre><code>local optA = outcome.none()
+local optB = outcome.some("123")
 assert(optB = optA:orOther(optB))
 </code></pre>
 
@@ -651,8 +554,8 @@ assert(optB = optA:orOther(optB))
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">other</span>
-            <span class="types"><a class="type" href="index.html#Option">`Option<T>`</a></span>
-         Alternative Option to return.
+            <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+         Alternative <code>Option&lt;T&gt;</code> to return.
         </li>
     </ul>
 
@@ -670,15 +573,14 @@ assert(optB = optA:orOther(optB))
     <dt>
     <a name = "Option:orElseOther"></a>
     <strong>Option:orElseOther (f)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#256">line 256</a>
     </dt>
     <dd>
 
-<p>Returns self if a value is present, otherwise returns the result of f. </p>
+<p>Returns self if a value is Some, otherwise returns the result of f. </p>
 
-<pre><code>local optA = Option.empty()
+<pre><code>local optA = outcome.none()
 local optB = optA:orElseOther(function()
-  return Option.of("123")
+  return outcome.some("123")
 end)
 assert(optB:unwrap() == "123")
 </code></pre>
@@ -708,14 +610,13 @@ assert(optB:unwrap() == "123")
     <dt>
     <a name = "Option:map"></a>
     <strong>Option:map (f)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#275">line 275</a>
     </dt>
     <dd>
 
 <p>Maps an <code>Option&lt;T&gt;</code> to <code>Option&lt;U&gt;</code> by applying a function to the contained
  value. </p>
 
-<pre><code>local value Option.of(1)
+<pre><code>local value outcome.some(1)
     :map(function(value) return value + 1 end)
     :unwrap()
 
@@ -747,19 +648,18 @@ assert(value == 2)
     <dt>
     <a name = "Option:mapOr"></a>
     <strong>Option:mapOr (defaultValue, f)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#300">line 300</a>
     </dt>
     <dd>
 
 <p>Applies a function to the contained value (if any), or returns a default. </p>
 
-<pre><code>local value Option.of("foo")
+<pre><code>local value outcome.some("foo")
     :mapOr("baz", function(value) return value .. " test" end)
     :unwrap()
 
 assert(value == "foo test")
 
-value Option.empty()
+value outcome.none()
     :mapOr("baz", function(value) return value .. " test" end)
     :unwrap()
 
@@ -772,7 +672,7 @@ assert(value == "baz")
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">defaultValue</span>
-         Value U to return if the option is empty.
+         Value U to return if the option is None.
         </li>
         <li><span class="parameter">f</span>
             <span class="types"><span class="type">function</span></span>
@@ -794,7 +694,6 @@ assert(value == "baz")
     <dt>
     <a name = "Option:mapOrElse"></a>
     <strong>Option:mapOrElse (defaultProvider, mapFunction)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#327">line 327</a>
     </dt>
     <dd>
 
@@ -802,13 +701,13 @@ assert(value == "baz")
 
 <pre><code>local mapFunction = function(value) return value .. "test" end)
 
-local value Option.of("foo")
+local value outcome.some("foo")
     :mapOr(function() return "baz" end), mapFunction)
     :unwrap()
 
 assert(value == "foo test")
 
-value Option.empty()
+value outcome.none()
     :mapOr(function() return "baz" end), mapFunction)
     :unwrap()
 
@@ -844,15 +743,14 @@ assert(value == "baz")
     <dt>
     <a name = "Option:flatmap"></a>
     <strong>Option:flatmap (f)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#346">line 346</a>
     </dt>
     <dd>
 
-<p>Returns an empty option if the option value is not preset.  Otherwise calls
+<p>Returns an None option if the option value is not preset.  Otherwise calls
  f with the wrapped value and returns the result.</p>
 
-<pre><code>local value = Option.of(1)
-    :flatmap(function(value) return Option.of(value + 1) end)
+<pre><code>local value = outcome.some(1)
+    :flatmap(function(value) return outcome.some(value + 1) end)
     :unwrap()
 
 assert(value == 2)
@@ -881,16 +779,43 @@ assert(value == 2)
 
 </dd>
     <dt>
+    <a name = "Option:filter"></a>
+    <strong>Option:filter (f)</strong>
+    </dt>
+    <dd>
+    Filters a Some Option through <code>f</code> and if <code>f</code> returns false, creates a
+ None Option.  None Option is returned as-is and not passed to <code>f</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Filter function that receives a value and returns bool.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;T&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "Option:okOr"></a>
     <strong>Option:okOr (err)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#363">line 363</a>
     </dt>
     <dd>
 
-<p>Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a present value to
- an Ok Result, and an empty value to Result err. </p>
+<p>Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a Some value to
+ an Ok Result, and an None value to Result err. </p>
 
-<pre><code>local res = Option.of(1):okOr("error data if empty")
+<pre><code>local res = outcome.some(1):okOr("error data if None")
 assert(res:isOk())
 assert(res:unwrap() == 1)
 </code></pre>
@@ -902,7 +827,7 @@ assert(res:unwrap() == 1)
     <ul>
         <li><span class="parameter">err</span>
             <span class="types"><span class="type">function</span></span>
-         Error to use in the Result if the value is empty.
+         Error to use in the Result if the value is None.
         </li>
     </ul>
 
@@ -920,15 +845,14 @@ assert(res:unwrap() == 1)
     <dt>
     <a name = "Option:okOrElse"></a>
     <strong>Option:okOrElse (errorProvider)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#382">line 382</a>
     </dt>
     <dd>
 
-<p>Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a present value
- to an Ok Result, and an empty value to Result err. </p>
+<p>Transforms the <code>Option&lt;T&gt;</code> into a <code>Result&lt;T, E&gt;</code>, mapping a Some value
+ to an Ok Result, and an None value to Result err. </p>
 
-<pre><code>local res = Option.of(1):okOrElse(function()
-  return "error data if empty"
+<pre><code>local res = outcome.some(1):okOrElse(function()
+  return "error data if None"
 end)
 assert(res:isOk())
 assert(res:unwrap() == 1)
@@ -976,36 +900,628 @@ assert(res:unwrap() == 1)
 local Result = outcome.Result
 
 -- Results are either Ok or Err.
-assert(Result.ok("ok value"):isOk())
-assert(Result.err("error value"):isErr())
+assert(outcome.ok("ok value"):isOk())
+assert(outcome.err("error value"):isErr())
 
 -- You can map over the Ok value in a Result.
-local result = Result.ok(1)
+local result = outcome.ok(1)
     :map(function(value) return value + 1 end)
     :unwrap()
 
 assert(result == 2)
 
 -- Raises an error with the message provided in expect.
-Result.err("error value"):expect("Result was not Ok"):
+outcome.err("error value"):expect("Result was not Ok"):
 
 -- You can provide a default value when unwrapping a Result.
-assert("foo" == Result.err("error value"):unwrapOr("foo"))
+assert("foo" == outcome.err("error value"):unwrapOr("foo"))
 </code></pre>
 
 
           </div>
     <dl class="function">
     <dt>
-    <a name = "Result.ok"></a>
-    <strong>Result.ok (value)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#455">line 455</a>
+    <a name = "Result:isOk"></a>
+    <strong>Result:isOk ()</strong>
+    </dt>
+    <dd>
+    Returns true if the result is Ok.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:isErr"></a>
+    <strong>Result:isErr ()</strong>
+    </dt>
+    <dd>
+    Returns true if the result is an error.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:ifOk"></a>
+    <strong>Result:ifOk (consumer)</strong>
+    </dt>
+    <dd>
+    Invokes a method with the value if the Result is Ok.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">consumer</span>
+            <span class="types"><span class="type">function</span></span>
+         Consumer to invoke with a side effect.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:ifErr"></a>
+    <strong>Result:ifErr (consumer)</strong>
+    </dt>
+    <dd>
+    Invokes a method if the Result is an Err and passes the error to consumer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">consumer</span>
+            <span class="types"><span class="type">function</span></span>
+         Method to invoke if the value is error.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:unwrap"></a>
+    <strong>Result:unwrap ()</strong>
+    </dt>
+    <dd>
+    Returns the value if Ok, or raises an error using the error value.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T the wrapped result value.
+    </ol>
+
+    <h3>Raises:</h3>
+    Errors with if the result is Err.
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:unwrapErr"></a>
+    <strong>Result:unwrapErr ()</strong>
+    </dt>
+    <dd>
+    Unwraps a result, yielding the content of an Err.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        E the error value.
+    </ol>
+
+    <h3>Raises:</h3>
+    Errors if the value is Ok.
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:unwrapOr"></a>
+    <strong>Result:unwrapOr (defaultValue)</strong>
+    </dt>
+    <dd>
+    Unwraps and returns the value if Ok, or returns default value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">defaultValue</span>
+         Default value T to return.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T returns the wrapped value or the default.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:unwrapOrElse"></a>
+    <strong>Result:unwrapOrElse (valueProvider)</strong>
+    </dt>
+    <dd>
+    Unwraps and returns the value if Ok, or returns the result of invoking
+ a method that when called returns a value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">valueProvider</span>
+            <span class="types"><span class="type">function</span></span>
+         Function to invoke if the value is an error.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T returns the Ok value or the value returned from valueProvider.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:expect"></a>
+    <strong>Result:expect (message)</strong>
+    </dt>
+    <dd>
+    Unwraps and returns the value if Ok, or errors with a message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         Message to include in the error.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        T returns the wrapped value.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:andOther"></a>
+    <strong>Result:andOther (other)</strong>
+    </dt>
+    <dd>
+    Returns other if the result is Ok, otherwise returns the Err value of self.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">other</span>
+            <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+         <code>Result&lt;T, E&gt;</code> other Alternative Result to return.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:orOther"></a>
+    <strong>Result:orOther (other)</strong>
+    </dt>
+    <dd>
+
+<p>Returns other if the result is Err, otherwise returns self. </p>
+
+<pre><code>local value = outcome.err("error!")
+    :orOther(outcome.ok(1))
+    :unwrap()
+
+assert(value == 1)
+
+value = outcome.ok(1)
+    :orOther(outcome.ok(999))
+    :unwrap()
+
+assert(value == 1)
+</code></pre>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">other</span>
+            <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+         <code>Result&lt;T, E&gt;</code> other Alternative Result to return.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:orElseOther"></a>
+    <strong>Result:orElseOther (resultProvider)</strong>
+    </dt>
+    <dd>
+
+<p>Calls resultProvider if the result is Err, otherwise returns self. </p>
+
+<p> This function can be used for control flow based on result values.</p>
+
+<pre><code>local value = outcome.err("error!")
+    :orElseOther(function(v) return outcome.ok(1) end)
+    :unwrap()
+
+assert(value == 1)
+
+value = outcome.ok(1)
+    :orElseOther(function(v) return outcome.ok(999) end)
+    :unwrap()
+
+assert(value == 1)
+</code></pre>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">resultProvider</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that returns <code>Result&lt;T, E&gt;</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:map"></a>
+    <strong>Result:map (f)</strong>
+    </dt>
+    <dd>
+
+<p>Maps a <code>Result&lt;T, E&gt;</code> to <code>Result&lt;U, E&gt;</code> by applying a function to a
+ contained Ok value, leaving an Err value untouched. </p>
+
+<p> This function can be used to compose the results of two functions.</p>
+
+<pre><code>local value = outcome.ok(1)
+    :map(function(v) return v + 1 end)
+    :unwrap()
+
+assert(value == 2)
+</code></pre>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that accepts <code>T</code> and returns <code>U</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;U, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:mapErr"></a>
+    <strong>Result:mapErr (f)</strong>
+    </dt>
+    <dd>
+
+<p>Maps a <code>Result&lt;T, E&gt;</code> to <code>Result&lt;T, F&gt;</code> by applying a function to a
+ contained Err value, leaving an Ok value untouched. </p>
+
+<p> This function can be used to pass through a successful result while handling
+ an error.</p>
+
+<pre><code>local value = outcome.err(1)
+    :mapErr(function(v) return v + 1 end)
+    :unwrapErr()
+
+assert(value == 2)
+</code></pre>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that accepts <code>E</code> and returns <code>U</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, F&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:flatmap"></a>
+    <strong>Result:flatmap (f)</strong>
+    </dt>
+    <dd>
+
+<p>Calls f if the result is Ok, otherwise returns the Err value of self. </p>
+
+<p> This function can be used for control flow based on Result values.</p>
+
+<pre><code>local value = outcome.ok(1)
+    :flatmap(function(v) return outcome.ok(v + 1) end)
+    :unwrap()
+
+assert(value == 2)
+</code></pre>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that accepts T and returns <code>Result&lt;T. E&gt;</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:okOption"></a>
+    <strong>Result:okOption ()</strong>
+    </dt>
+    <dd>
+    Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;T&gt;</code>.
+ Converts self into an <code>Option&lt;T&gt;</code>, consuming self, and discarding the error,
+ if any.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Result:errOption"></a>
+    <strong>Result:errOption ()</strong>
+    </dt>
+    <dd>
+    Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;E&gt;</code>.
+ Converts self into an <code>Option&lt;E&gt;</code>, consuming self, and discarding the
+ success value, if any.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
+        Returns <code>Result&lt;T, E&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Option_functions"></a>Option functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "option"></a>
+    <strong>option (value)</strong>
+    </dt>
+    <dd>
+
+<p>Returns either a None or Some Option based on if the value == nil. </p>
+
+<pre><code>local opt = outcome.option(nil)
+assert(opt:isNone())
+
+local opt = outcome.option("foo")
+assert(opt:isSome())
+</code></pre>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;T&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "some"></a>
+    <strong>some (value)</strong>
+    </dt>
+    <dd>
+
+<p>Create a new Option, wrapping a value.
+ If the provided value is nil, then the Option is considered None.</p>
+
+<pre><code>local opt = outcome.some("abc")
+assert(opt:isSome())
+assert("abc" == opt:unwrap())
+</code></pre>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         Value T to wrap.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        <code>Option&lt;T&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "none"></a>
+    <strong>none ()</strong>
+    </dt>
+    <dd>
+
+<p>Returns a None Option. </p>
+
+<pre><code>local opt = outcome.none()
+assert(opt:isNone())
+</code></pre>
+
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Option">Option</a></span>
+        Returns <code>Option&lt;T&gt;</code>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Result_functions"></a>Result functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "ok"></a>
+    <strong>ok (value)</strong>
     </dt>
     <dd>
 
 <p>Create a new Ok Result. </p>
 
-<pre><code>local res = Result.ok("foo")
+<pre><code>local res = outcome.ok("foo")
 assert(res:isOk())
 assert(res:unwrap() == "foo")
 </code></pre>
@@ -1033,20 +1549,19 @@ assert(res:unwrap() == "foo")
 
 </dd>
     <dt>
-    <a name = "Result.err"></a>
-    <strong>Result.err (value)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#472">line 472</a>
+    <a name = "err"></a>
+    <strong>err (value)</strong>
     </dt>
     <dd>
 
 <p>Create a new Err Result. </p>
 
-<pre><code>local res = Result.err("error message")
+<pre><code>local res = outcome.err("error message")
 assert(res:isErr())
 assert(res:unwrapErr() == "message")
 
 -- Err values can be of any type.
-local resWithComplexErr = Result.err({foo = true})
+local resWithComplexErr = outcome.err({foo = true})
 assert(resWithComplexErr:isErr())
 assert(resWithComplexErr:unwrapErr().foo == true)
 </code></pre>
@@ -1074,9 +1589,8 @@ assert(resWithComplexErr:unwrapErr().foo == true)
 
 </dd>
     <dt>
-    <a name = "Result.pcall"></a>
-    <strong>Result.pcall (f, Arguments)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#486">line 486</a>
+    <a name = "pcall"></a>
+    <strong>pcall (f, Arguments)</strong>
     </dt>
     <dd>
 
@@ -1114,507 +1628,6 @@ assert(res:unwrapErr() == "oh no!")
 
 
 </dd>
-    <dt>
-    <a name = "Result:isOk"></a>
-    <strong>Result:isOk ()</strong>
-    <a style="float:right;" href="source/outcome.lua.html#497">line 497</a>
-    </dt>
-    <dd>
-    Returns true if the result is Ok.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">bool</span></span>
-
-
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:isErr"></a>
-    <strong>Result:isErr ()</strong>
-    <a style="float:right;" href="source/outcome.lua.html#503">line 503</a>
-    </dt>
-    <dd>
-    Returns true if the result is an error.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">bool</span></span>
-
-
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:unwrap"></a>
-    <strong>Result:unwrap ()</strong>
-    <a style="float:right;" href="source/outcome.lua.html#528">line 528</a>
-    </dt>
-    <dd>
-    Returns the value if Ok, or raises an error using the error value.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-        T the wrapped result value.
-    </ol>
-
-    <h3>Raises:</h3>
-    Errors with if the result is Err.
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:unwrapErr"></a>
-    <strong>Result:unwrapErr ()</strong>
-    <a style="float:right;" href="source/outcome.lua.html#538">line 538</a>
-    </dt>
-    <dd>
-    Unwraps a result, yielding the content of an Err.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-        E the error value.
-    </ol>
-
-    <h3>Raises:</h3>
-    Errors if the value is Ok.
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:expect"></a>
-    <strong>Result:expect (message)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#546">line 546</a>
-    </dt>
-    <dd>
-    Unwraps and returns the value if Ok, or errors with a message.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">message</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
-         Message to include in the error.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        T returns the wrapped value.
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:unwrapOr"></a>
-    <strong>Result:unwrapOr (defaultValue)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#554">line 554</a>
-    </dt>
-    <dd>
-    Unwraps and returns the value if Ok, or returns default value.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">defaultValue</span>
-         Default value T to return.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        T returns the wrapped value or the default.
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:unwrapOrElse"></a>
-    <strong>Result:unwrapOrElse (valueProvider)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#566">line 566</a>
-    </dt>
-    <dd>
-    Unwraps and returns the value if Ok, or returns the result of invoking
- a method that when called returns a value.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">valueProvider</span>
-            <span class="types"><span class="type">function</span></span>
-         Function to invoke if the value is an error.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        T returns the Ok value or the value returned from valueProvider.
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:ifOk"></a>
-    <strong>Result:ifOk (consumer)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#576">line 576</a>
-    </dt>
-    <dd>
-    Invokes a method with the value if the Result is Ok.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">consumer</span>
-            <span class="types"><span class="type">function</span></span>
-         Consumer to invoke with a side effect.
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:ifErr"></a>
-    <strong>Result:ifErr (consumer)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#584">line 584</a>
-    </dt>
-    <dd>
-    Invokes a method if the Result is an Err and passes the error to consumer.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">consumer</span>
-            <span class="types"><span class="type">function</span></span>
-         Method to invoke if the value is error.
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:okOption"></a>
-    <strong>Result:okOption ()</strong>
-    <a style="float:right;" href="source/outcome.lua.html#594">line 594</a>
-    </dt>
-    <dd>
-    Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;T&gt;</code>.
- Converts self into an <code>Option&lt;T&gt;</code>, consuming self, and discarding the error,
- if any.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
-        Returns <code>Result&lt;T, E&gt;</code>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:errOption"></a>
-    <strong>Result:errOption ()</strong>
-    <a style="float:right;" href="source/outcome.lua.html#606">line 606</a>
-    </dt>
-    <dd>
-    Converts from <code>Result&lt;T, E&gt;</code> to <code>Option&lt;E&gt;</code>.
- Converts self into an <code>Option&lt;E&gt;</code>, consuming self, and discarding the
- success value, if any.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
-        Returns <code>Result&lt;T, E&gt;</code>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:andOther"></a>
-    <strong>Result:andOther (other)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#617">line 617</a>
-    </dt>
-    <dd>
-    Returns other if the result is Ok, otherwise returns the Err value of self.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">other</span>
-            <span class="types"><a class="type" href="index.html#Result">Result</a></span>
-         <code>Result&lt;T, E&gt;</code> other Alternative Result to return.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
-        Returns <code>Result&lt;T, E&gt;</code>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:orOther"></a>
-    <strong>Result:orOther (other)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#640">line 640</a>
-    </dt>
-    <dd>
-
-<p>Returns other if the result is Err, otherwise returns self. </p>
-
-<pre><code>local value = Result.err("error!")
-    :orOther(Result.ok(1))
-    :unwrap()
-
-assert(value == 1)
-
-value = Result.ok(1)
-    :orOther(Result.ok(999))
-    :unwrap()
-
-assert(value == 1)
-</code></pre>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">other</span>
-            <span class="types"><a class="type" href="index.html#Result">Result</a></span>
-         <code>Result&lt;T, E&gt;</code> other Alternative Result to return.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
-        Returns <code>Result&lt;T, E&gt;</code>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:orElseOther"></a>
-    <strong>Result:orElseOther (resultProvider)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#666">line 666</a>
-    </dt>
-    <dd>
-
-<p>Calls resultProvider if the result is Err, otherwise returns self. </p>
-
-<p> This function can be used for control flow based on result values.</p>
-
-<pre><code>local value = Result.err("error!")
-    :orElseOther(function(v) return Result.ok(1) end)
-    :unwrap()
-
-assert(value == 1)
-
-value = Result.ok(1)
-    :orElseOther(function(v) return Result.ok(999) end)
-    :unwrap()
-
-assert(value == 1)
-</code></pre>
-
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">resultProvider</span>
-            <span class="types"><span class="type">function</span></span>
-         Function that returns <code>Result&lt;T, E&gt;</code>.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
-        Returns <code>Result&lt;T, E&gt;</code>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:map"></a>
-    <strong>Result:map (f)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#687">line 687</a>
-    </dt>
-    <dd>
-
-<p>Maps a <code>Result&lt;T, E&gt;</code> to <code>Result&lt;U, E&gt;</code> by applying a function to a
- contained Ok value, leaving an Err value untouched. </p>
-
-<p> This function can be used to compose the results of two functions.</p>
-
-<pre><code>local value = Result.ok(1)
-    :map(function(v) return v + 1 end)
-    :unwrap()
-
-assert(value == 2)
-</code></pre>
-
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">f</span>
-            <span class="types"><span class="type">function</span></span>
-         Function that accepts <code>T</code> and returns <code>U</code>.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
-        Returns <code>Result&lt;U, E&gt;</code>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:mapErr"></a>
-    <strong>Result:mapErr (f)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#709">line 709</a>
-    </dt>
-    <dd>
-
-<p>Maps a <code>Result&lt;T, E&gt;</code> to <code>Result&lt;T, F&gt;</code> by applying a function to a
- contained Err value, leaving an Ok value untouched. </p>
-
-<p> This function can be used to pass through a successful result while handling
- an error.</p>
-
-<pre><code>local value = Result.err(1)
-    :mapErr(function(v) return v + 1 end)
-    :unwrapErr()
-
-assert(value == 2)
-</code></pre>
-
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">f</span>
-            <span class="types"><span class="type">function</span></span>
-         Function that accepts <code>E</code> and returns <code>U</code>.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
-        Returns <code>Result&lt;T, F&gt;</code>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Result:flatmap"></a>
-    <strong>Result:flatmap (f)</strong>
-    <a style="float:right;" href="source/outcome.lua.html#729">line 729</a>
-    </dt>
-    <dd>
-
-<p>Calls f if the result is Ok, otherwise returns the Err value of self. </p>
-
-<p> This function can be used for control flow based on Result values.</p>
-
-<pre><code>local value = Result.ok(1)
-    :flatmap(function(v) return Result.ok(v + 1) end)
-    :unwrap()
-
-assert(value == 2)
-</code></pre>
-
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">f</span>
-            <span class="types"><span class="type">function</span></span>
-         Function that accepts T and returns <code>Result&lt;T. E&gt;</code>.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="index.html#Result">Result</a></span>
-        Returns <code>Result&lt;T, E&gt;</code>
-    </ol>
-
-
-
-
-</dd>
 </dl>
 
 
@@ -1622,7 +1635,7 @@ assert(value == 2)
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2017-01-14 21:55:38 </i>
+<i style="float:right;">Last updated 2017-01-15 19:39:44 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
