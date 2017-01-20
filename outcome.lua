@@ -4,7 +4,7 @@
 --
 -- @module outcome
 local outcome = {
-  _VERSION = "0.2.1",
+  _VERSION = "0.2.2",
   _DESCRIPTION = 'Functional and composable option and result types for Lua.',
   _URL = 'https://github.com/mtdowling/outcome',
   _LICENSE = [[

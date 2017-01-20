@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.2 - 2017-01-19
+
+* Fixed `outcome.pcall`.
+
 ## 0.2.1 - 2017-01-15
 
 * `Option:ifSome`, `Option:ifNone`, `Result:ifOk`, and `Result:ifErr` all now
