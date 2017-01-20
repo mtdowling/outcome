@@ -11,6 +11,14 @@ describe("Result", function()
     assert.equal("foo", value:unwrapErr())
   end)
 
+  it("is created from pcall", function()
+    local errorValue = {"foo"}
+    local err = function() return errorValue end
+    local ok = function() return "bar" end
+    assert.equal(errorValue, outcome.pcall(err):unwrapErr())
+    assert.equal("bar", outcome.pcall(ok):unwrap())
+  end)
+
   describe("when comparing Results", function()
     it("checks for equality", function()
       local a = outcome.ok("a")
